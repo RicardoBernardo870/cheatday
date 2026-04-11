@@ -3,26 +3,111 @@
 @tailwind utilities;
 
 @layer base {
-  html, body {
-    @apply bg-[#0f0f0f] text-white;
+  /* ─── CSS variables: dark theme (default) ────────────────── */
+  :root {
+    --color-base: #0a0a0a;
+    --color-text: #ffffff;
+    --color-text-muted: rgba(255, 255, 255, 0.4);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-bg-strong: rgba(255, 255, 255, 0.08);
+    --glass-bg-card: rgba(255, 255, 255, 0.04);
+    --glass-bg-elevated: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-border-strong: rgba(255, 255, 255, 0.15);
+    --glass-border-card: rgba(255, 255, 255, 0.08);
+    --glass-border-elevated: rgba(255, 255, 255, 0.18);
+    --glass-inner-glow: rgba(255, 255, 255, 0.08);
+  }
+
+  /* ─── CSS variables: light theme ─────────────────────────── */
+  :root:not(.dark) {
+    --color-base: #f2f2f7;
+    --color-text: #1c1c1e;
+    --color-text-muted: rgba(0, 0, 0, 0.45);
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-bg-strong: rgba(255, 255, 255, 0.7);
+    --glass-bg-card: rgba(255, 255, 255, 0.5);
+    --glass-bg-elevated: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --glass-border-strong: rgba(255, 255, 255, 0.9);
+    --glass-border-card: rgba(209, 209, 214, 0.6);
+    --glass-border-elevated: rgba(255, 255, 255, 0.95);
+    --glass-inner-glow: rgba(255, 255, 255, 0.6);
+  }
+
+  html,
+  body {
+    background-color: var(--color-base);
+    color: var(--color-text);
     overscroll-behavior: none;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   html {
     height: -webkit-fill-available;
   }
 
-  body, #app {
+  body,
+  #app {
     min-height: 100vh;
     min-height: -webkit-fill-available;
   }
 }
 
 @layer utilities {
+  /* ─── iPhone safe area ───────────────────────────────── */
   .pb-safe {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
   .pt-safe {
     padding-top: env(safe-area-inset-top);
+  }
+
+  /* ─── Apple Glass utilities (theme-aware via CSS vars) ── */
+
+  .glass {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-strong {
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    background: var(--glass-bg-strong);
+    border: 1px solid var(--glass-border-strong);
+  }
+
+  .glass-card {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: var(--glass-bg-card);
+    border: 1px solid var(--glass-border-card);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 var(--glass-inner-glow);
+  }
+
+  .glass-elevated {
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    background: var(--glass-bg-elevated);
+    border: 1px solid var(--glass-border-elevated);
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 var(--glass-inner-glow);
+  }
+
+  .glass-primary {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 107, 107, 0.85);
+    border: 1px solid rgba(255, 107, 107, 0.4);
+    box-shadow:
+      0 4px 16px rgba(255, 107, 107, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 }
