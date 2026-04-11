@@ -4,6 +4,9 @@ import { useMealsStore } from '@/stores/meals';
 import { useCategoriesStore } from '@/stores/categories';
 import { useLimits } from '@/composables/useLimits';
 
+import StatsOverviewCards from '@/components/StatsOverviewCards.vue';
+import CategoryBreakdownItem from '@/components/CategoryBreakdownItem.vue';
+
 const meals = useMealsStore();
 const categories = useCategoriesStore();
 const limits = useLimits();
@@ -25,49 +28,24 @@ const categoryBreakdown = computed(() => {
   <div class="px-4 py-6 space-y-6">
     <h1 class="text-xl font-bold">{{ monthName }}</h1>
 
-    <div class="grid grid-cols-3 gap-3">
-      <div class="bg-card rounded-2xl p-4 text-center glass">
-        <p class="text-2xl font-bold text-primary">
-          {{ limits.monthlyCount.value }}
-        </p>
-        <p class="text-xs text-muted mt-1">logged</p>
-      </div>
-      <div class="bg-card rounded-2xl p-4 text-center glass">
-        <p class="text-2xl font-bold">{{ limits.monthlyLimit.value }}</p>
-        <p class="text-xs text-muted mt-1">limit</p>
-      </div>
-      <div class="bg-card rounded-2xl p-4 text-center glass">
-        <p class="text-2xl font-bold text-green-400">
-          {{ Math.max(0, limits.monthlyLimit.value - limits.monthlyCount.value) }}
-        </p>
-        <p class="text-xs text-muted mt-1">remaining</p>
-      </div>
-    </div>
+    <StatsOverviewCards
+      :logged="limits.monthlyCount.value"
+      :limit="limits.monthlyLimit.value"
+      :remaining="Math.max(0, limits.monthlyLimit.value - limits.monthlyCount.value)"
+    />
 
     <div class="space-y-3">
       <h2 class="text-sm text-muted uppercase tracking-wider">By category</h2>
-      <div
+
+      <CategoryBreakdownItem
         v-for="cat in categoryBreakdown"
         :key="cat.id"
-        class="bg-card rounded-xl px-4 py-3 flex items-center gap-3 glass"
-      >
-        <span class="text-2xl">{{ cat.icon }}</span>
-        <div class="flex-1">
-          <div class="flex justify-between mb-1">
-            <span class="text-sm font-medium">{{ cat.name }}</span>
-            <span class="text-sm font-bold" :style="{ color: cat.color }">{{ cat.count }}</span>
-          </div>
-          <div class="h-1.5 bg-[#333] rounded-full overflow-hidden">
-            <div
-              class="h-full rounded-full"
-              :style="{
-                width: `${Math.min(100, (cat.count / Math.max(1, limits.monthlyCount.value)) * 100)}%`,
-                backgroundColor: cat.color,
-              }"
-            />
-          </div>
-        </div>
-      </div>
+        :icon="cat.icon"
+        :name="cat.name"
+        :color="cat.color"
+        :count="cat.count"
+        :totalCount="limits.monthlyCount.value"
+      />
 
       <div v-if="categoryBreakdown.length === 0" class="text-center py-8 text-muted">
         <p class="text-4xl mb-2">✨</p>

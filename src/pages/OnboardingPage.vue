@@ -3,6 +3,9 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
+import LimitsForm from '@/components/LimitsForm.vue';
+import LimitsSummaryCard from '@/components/LimitsSummaryCard.vue';
+
 const router = useRouter();
 const auth = useAuthStore();
 
@@ -43,58 +46,13 @@ async function finish() {
         </p>
       </div>
 
-      <div class="space-y-3">
-        <div class="flex justify-between items-center">
-          <label class="font-medium">Cheat meal allowance</label>
-          <span class="text-primary font-bold text-xl">{{ cheatPercentage }}%</span>
-        </div>
-        <input
-          v-model="cheatPercentage"
-          type="range"
-          min="5"
-          max="40"
-          step="5"
-          class="w-full accent-primary"
-        />
-        <div class="flex justify-between text-xs text-muted">
-          <span>5% strict</span>
-          <span>40% flexible</span>
-        </div>
-      </div>
+      <LimitsForm
+        v-model:cheatPercentage="cheatPercentage"
+        v-model:mealsPerDay="mealsPerDay"
+        :showHints="true"
+      />
 
-      <div class="space-y-3">
-        <div class="flex justify-between items-center">
-          <label class="font-medium">Meals per day</label>
-          <span class="text-primary font-bold text-xl">{{ mealsPerDay }}</span>
-        </div>
-        <div class="flex gap-3">
-          <button
-            v-for="n in [2, 3, 4, 5]"
-            :key="n"
-            @click="mealsPerDay = n"
-            :class="[
-              'flex-1 rounded-xl py-2 text-sm font-medium border transition-colors',
-              mealsPerDay === n
-                ? 'bg-primary border-primary text-white'
-                : 'bg-card border-border text-muted',
-            ]"
-          >
-            {{ n }}
-          </button>
-        </div>
-      </div>
-
-      <div class="bg-card rounded-2xl p-5 space-y-2 border border-border">
-        <p class="text-muted text-xs uppercase tracking-wider">Your limits</p>
-        <div class="flex justify-between">
-          <span class="text-sm">This month</span>
-          <span class="font-bold text-primary">{{ monthlyLimit }} cheat meals</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-sm text-muted">Per week</span>
-          <span class="text-muted">~{{ weeklyLimit }}</span>
-        </div>
-      </div>
+      <LimitsSummaryCard :monthlyLimit="monthlyLimit" :weeklyLimit="weeklyLimit" />
 
       <button
         @click="finish"
