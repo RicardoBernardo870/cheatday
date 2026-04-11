@@ -15,6 +15,7 @@ app.use(router);
 app.use(PrimeVue, {
   unstyled: true,
 });
+
 app.use(ToastService);
 
 app.mount('#app');
