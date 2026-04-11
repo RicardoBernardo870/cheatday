@@ -54,11 +54,15 @@ async function saveSettings() {
 
     <!-- Theme toggle -->
     <div class="glass-card rounded-2xl p-5 space-y-1">
-      <h2 class="text-sm uppercase tracking-wider" style="color: var(--color-text-muted)">Appearance</h2>
+      <h2 class="text-sm uppercase tracking-wider" style="color: var(--color-text-muted)">
+        Appearance
+      </h2>
       <div class="flex items-center justify-between pt-2">
         <div class="flex items-center gap-3">
           <span class="text-xl">{{ isDark ? '🌙' : '☀️' }}</span>
-          <span class="font-medium" style="color: var(--color-text)">{{ isDark ? 'Dark mode' : 'Light mode' }}</span>
+          <span class="font-medium" style="color: var(--color-text)">{{
+            isDark ? 'Dark mode' : 'Light mode'
+          }}</span>
         </div>
         <!-- Toggle switch -->
         <button
@@ -78,7 +82,9 @@ async function saveSettings() {
     </div>
 
     <div class="space-y-6">
-      <h2 class="text-sm uppercase tracking-wider" style="color: var(--color-text-muted)">Your limits</h2>
+      <h2 class="text-sm uppercase tracking-wider" style="color: var(--color-text-muted)">
+        Your limits
+      </h2>
 
       <div class="space-y-3">
         <div class="flex justify-between items-center">

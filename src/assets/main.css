@@ -5,48 +5,52 @@
 @layer base {
   /* ─── CSS variables: dark theme (default) ────────────────── */
   :root {
-    --color-base:         #0a0a0a;
-    --color-text:         #ffffff;
-    --color-text-muted:   rgba(255, 255, 255, 0.4);
-    --glass-bg:           rgba(255, 255, 255, 0.05);
-    --glass-bg-strong:    rgba(255, 255, 255, 0.08);
-    --glass-bg-card:      rgba(255, 255, 255, 0.04);
-    --glass-bg-elevated:  rgba(255, 255, 255, 0.10);
-    --glass-border:       rgba(255, 255, 255, 0.10);
-    --glass-border-strong:rgba(255, 255, 255, 0.15);
-    --glass-border-card:  rgba(255, 255, 255, 0.08);
+    --color-base: #0a0a0a;
+    --color-text: #ffffff;
+    --color-text-muted: rgba(255, 255, 255, 0.4);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-bg-strong: rgba(255, 255, 255, 0.08);
+    --glass-bg-card: rgba(255, 255, 255, 0.04);
+    --glass-bg-elevated: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-border-strong: rgba(255, 255, 255, 0.15);
+    --glass-border-card: rgba(255, 255, 255, 0.08);
     --glass-border-elevated: rgba(255, 255, 255, 0.18);
-    --glass-inner-glow:   rgba(255, 255, 255, 0.08);
+    --glass-inner-glow: rgba(255, 255, 255, 0.08);
   }
 
   /* ─── CSS variables: light theme ─────────────────────────── */
   :root:not(.dark) {
-    --color-base:         #f2f2f7;
-    --color-text:         #1c1c1e;
-    --color-text-muted:   rgba(0, 0, 0, 0.45);
-    --glass-bg:           rgba(255, 255, 255, 0.55);
-    --glass-bg-strong:    rgba(255, 255, 255, 0.70);
-    --glass-bg-card:      rgba(255, 255, 255, 0.50);
-    --glass-bg-elevated:  rgba(255, 255, 255, 0.80);
-    --glass-border:       rgba(255, 255, 255, 0.80);
-    --glass-border-strong:rgba(255, 255, 255, 0.90);
-    --glass-border-card:  rgba(209, 209, 214, 0.60);
+    --color-base: #f2f2f7;
+    --color-text: #1c1c1e;
+    --color-text-muted: rgba(0, 0, 0, 0.45);
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-bg-strong: rgba(255, 255, 255, 0.7);
+    --glass-bg-card: rgba(255, 255, 255, 0.5);
+    --glass-bg-elevated: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.8);
+    --glass-border-strong: rgba(255, 255, 255, 0.9);
+    --glass-border-card: rgba(209, 209, 214, 0.6);
     --glass-border-elevated: rgba(255, 255, 255, 0.95);
-    --glass-inner-glow:   rgba(255, 255, 255, 0.60);
+    --glass-inner-glow: rgba(255, 255, 255, 0.6);
   }
 
-  html, body {
+  html,
+  body {
     background-color: var(--color-base);
     color: var(--color-text);
     overscroll-behavior: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   html {
     height: -webkit-fill-available;
   }
 
-  body, #app {
+  body,
+  #app {
     min-height: 100vh;
     min-height: -webkit-fill-available;
   }

@@ -17,7 +17,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-base dark:bg-base text-gray-900 dark:text-white transition-colors duration-200">
+  <div class="min-h-screen bg-base transition-colors duration-300" style="color: var(--color-text)">
     <div v-if="auth.loading" class="flex items-center justify-center min-h-screen">
       <div class="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
     </div>

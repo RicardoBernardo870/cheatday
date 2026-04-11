@@ -1,33 +1,29 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: 'class',
-  content: [
-    './index.html',
-    './src/**/*.{vue,js,ts,jsx,tsx}'
-  ],
+  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
         // Brand
-        primary:   '#FF6B6B',
+        primary: '#FF6B6B',
         secondary: '#FFA07A',
         // Status
-        warn:   '#FFD700',
+        warn: '#FFD700',
         danger: '#FF4444',
         // Glass-first neutrals (replaces opaque card/surface)
-        surface:  'rgba(255,255,255,0.04)',
-        card:     'rgba(255,255,255,0.06)',
-        border:   'rgba(255,255,255,0.08)',
-        muted:    'rgba(255,255,255,0.4)',
-        // Base backgrounds (used with dark: prefix)
-        base: '#0a0a0a',
-        'base-light': '#f2f2f7',
+        surface: 'rgba(255,255,255,0.04)',
+        card: 'rgba(255,255,255,0.06)',
+        border: 'rgba(255,255,255,0.08)',
+        muted: 'rgba(255,255,255,0.4)',
+        // Base background — references CSS variable so it reacts to theme toggle
+        base: 'var(--color-base)',
       },
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Segoe UI', 'sans-serif']
+        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Segoe UI', 'sans-serif'],
       },
       padding: {
-        safe: 'env(safe-area-inset-bottom)'
+        safe: 'env(safe-area-inset-bottom)',
       },
       backdropBlur: {
         xs: '4px',
@@ -51,10 +47,16 @@ export default {
       },
       keyframes: {
         fadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
-        slideUp: { from: { opacity: '0', transform: 'translateY(16px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
-        scaleIn: { from: { opacity: '0', transform: 'scale(0.95)' }, to: { opacity: '1', transform: 'scale(1)' } },
+        slideUp: {
+          from: { opacity: '0', transform: 'translateY(16px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          from: { opacity: '0', transform: 'scale(0.95)' },
+          to: { opacity: '1', transform: 'scale(1)' },
+        },
       },
-    }
+    },
   },
-  plugins: []
-}
+  plugins: [],
+};
