@@ -26,17 +26,17 @@ const categoryBreakdown = computed(() => {
     <h1 class="text-xl font-bold">{{ monthName }}</h1>
 
     <div class="grid grid-cols-3 gap-3">
-      <div class="bg-card rounded-2xl p-4 text-center border border-border">
+      <div class="bg-card rounded-2xl p-4 text-center glass">
         <p class="text-2xl font-bold text-primary">
           {{ limits.monthlyCount.value }}
         </p>
         <p class="text-xs text-muted mt-1">logged</p>
       </div>
-      <div class="bg-card rounded-2xl p-4 text-center border border-border">
+      <div class="bg-card rounded-2xl p-4 text-center glass">
         <p class="text-2xl font-bold">{{ limits.monthlyLimit.value }}</p>
         <p class="text-xs text-muted mt-1">limit</p>
       </div>
-      <div class="bg-card rounded-2xl p-4 text-center border border-border">
+      <div class="bg-card rounded-2xl p-4 text-center glass">
         <p class="text-2xl font-bold text-green-400">
           {{ Math.max(0, limits.monthlyLimit.value - limits.monthlyCount.value) }}
         </p>
@@ -49,7 +49,7 @@ const categoryBreakdown = computed(() => {
       <div
         v-for="cat in categoryBreakdown"
         :key="cat.id"
-        class="bg-card rounded-xl px-4 py-3 flex items-center gap-3 border border-border"
+        class="bg-card rounded-xl px-4 py-3 flex items-center gap-3 glass"
       >
         <span class="text-2xl">{{ cat.icon }}</span>
         <div class="flex-1">

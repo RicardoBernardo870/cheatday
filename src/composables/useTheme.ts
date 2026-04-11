@@ -15,6 +15,8 @@ const applyTheme = (theme: Theme) => {
   }
 };
 
+let systemThemeListenerAttached = false;
+
 export const useTheme = () => {
   const init = () => {
     const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
@@ -22,11 +24,14 @@ export const useTheme = () => {
     applyTheme(theme);
 
     // Keep in sync if user changes system preference and has no stored override
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        applyTheme(e.matches ? 'dark' : 'light');
-      }
-    });
+    if (!systemThemeListenerAttached) {
+      systemThemeListenerAttached = true;
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem(STORAGE_KEY)) {
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    }
   };
 
   const current = (): Theme => {

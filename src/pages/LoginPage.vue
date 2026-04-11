@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
 const auth = useAuthStore();
 
-const email = ref<string>("");
-const password = ref<string>("");
-const error = ref<string>("");
+const email = ref<string>('');
+const password = ref<string>('');
+const error = ref<string>('');
 const loading = ref<boolean>(false);
-const mode = ref<"signin" | "signup" | "magic">("signin");
+const mode = ref<'signin' | 'signup' | 'magic'>('signin');
 const magicSent = ref<boolean>(false);
 
 async function submit() {
-  error.value = "";
+  error.value = '';
   loading.value = true;
   try {
-    if (mode.value === "magic") {
+    if (mode.value === 'magic') {
       await auth.signInWithMagicLink(email.value);
       magicSent.value = true;
-    } else if (mode.value === "signup") {
+    } else if (mode.value === 'signup') {
       await auth.signUp(email.value, password.value);
-      router.push({ name: "onboarding" });
+      router.push({ name: 'onboarding' });
     } else {
       await auth.signIn(email.value, password.value);
-      router.push({ name: "home" });
+      router.push({ name: 'home' });
     }
   } catch (e: any) {
-    error.value = e.message ?? "Something went wrong. Try again.";
+    error.value = e.message ?? 'Something went wrong. Try again.';
   } finally {
     loading.value = false;
   }
@@ -36,29 +36,25 @@ async function submit() {
 </script>
 
 <template>
-  <div
-    class="flex flex-col min-h-screen bg-[#0f0f0f] items-center justify-center px-6 pt-safe"
-  >
+  <div class="flex flex-col min-h-screen bg-[#0f0f0f] items-center justify-center px-6 pt-safe">
     <div class="mb-10 text-center">
       <div class="text-6xl mb-3">🍔</div>
       <h1 class="text-3xl font-bold tracking-tight">CheatDay</h1>
-      <p class="text-muted text-sm mt-1">Track your 80/20</p>
+      <p class="text-sm mt-1">Track your 80/20</p>
     </div>
 
     <div v-if="magicSent" class="text-center space-y-3">
       <div class="text-4xl">📬</div>
       <p class="font-semibold">Check your email</p>
-      <p class="text-muted text-sm">
+      <p class="text-sm">
         We sent a sign-in link to <strong>{{ email }}</strong>
       </p>
-      <button @click="magicSent = false" class="text-primary text-sm underline">
-        Try again
-      </button>
+      <button @click="magicSent = false" class="text-primary text-sm underline">Try again</button>
     </div>
 
     <form v-else @submit.prevent="submit" class="w-full max-w-sm space-y-4">
       <div>
-        <label class="block text-sm text-muted mb-1">Email</label>
+        <label class="block text-sm mb-1">Email</label>
         <input
           v-model="email"
           type="email"
@@ -69,7 +65,7 @@ async function submit() {
       </div>
 
       <div v-if="mode !== 'magic'">
-        <label class="block text-sm text-muted mb-1">Password</label>
+        <label class="block text-sm mb-1">Password</label>
         <input
           v-model="password"
           type="password"
@@ -97,23 +93,18 @@ async function submit() {
           v-if="mode !== 'magic'"
           type="button"
           @click="mode = 'magic'"
-          class="text-muted text-sm underline"
+          class="text-sm underline"
         >
           Sign in with magic link instead
         </button>
-        <button
-          v-if="mode === 'signin'"
-          type="button"
-          @click="mode = 'signup'"
-          class="text-muted text-sm"
-        >
+        <button v-if="mode === 'signin'" type="button" @click="mode = 'signup'" class="text-sm">
           No account? <span class="text-primary underline">Sign up</span>
         </button>
         <button
           v-if="mode === 'signup' || mode === 'magic'"
           type="button"
           @click="mode = 'signin'"
-          class="text-muted text-sm"
+          class="text-sm"
         >
           Already have an account?
           <span class="text-primary underline">Sign in</span>
