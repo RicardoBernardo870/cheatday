@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useToast } from 'primevue/usetoast';
+import type { ToastMessageOptions } from 'primevue/toast';
 import { useCategoriesStore } from '@/stores/categories';
 import { useMealsStore } from '@/stores/meals';
 import { useLimits } from '@/composables/useLimits';
@@ -22,13 +23,15 @@ const handleTap = async (categoryId: string) => {
   if ('vibrate' in navigator) navigator.vibrate(10);
   await meals.logMeal(categoryId);
   const cat = categories.categories.find((c) => c.id === categoryId);
-  toast.add({
+  const message: ToastMessageOptions & { data: { categoryId: string } } = {
     severity: 'success',
     summary: `${cat?.icon ?? ''} ${cat?.name ?? 'Meal'} logged`,
-    life: 4000,
+    closable: false,
+    life: 5000,
     group: 'meal',
     data: { categoryId },
-  });
+  };
+  toast.add(message);
 };
 
 const handleLongPress = async (categoryId: string) => {

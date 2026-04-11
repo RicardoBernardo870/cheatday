@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { RouterView, RouterLink, useRoute } from 'vue-router';
-import { Toast } from 'primevue';
-import { useMealsStore } from '@/stores/meals';
 
 const route = useRoute();
-const meals = useMealsStore();
 </script>
 
 <template>
@@ -16,20 +13,6 @@ const meals = useMealsStore();
         </Transition>
       </RouterView>
     </main>
-
-    <Toast group="meal" position="top-center">
-      <template #message="{ message, closeCallback }">
-        <div class="flex items-center justify-between w-full gap-4">
-          <span class="font-semibold text-sm">{{ message.summary }}</span>
-          <button
-            @click="() => { meals.undoLastLog(message.data.categoryId); closeCallback() }"
-            class="text-xs underline shrink-0 opacity-80 hover:opacity-100"
-          >
-            Undo
-          </button>
-        </div>
-      </template>
-    </Toast>
 
     <nav class="pb-safe">
       <div class="glass-card fixed bottom-0 w-full flex justify-around items-center h-20 pb-safe">

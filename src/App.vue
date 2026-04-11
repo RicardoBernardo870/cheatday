@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
+import { Toast } from 'primevue'
+import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '@/stores/auth'
 import { useMealsStore } from '@/stores/meals'
 import { useTheme } from '@/composables/useTheme'
@@ -7,6 +9,7 @@ import { useTheme } from '@/composables/useTheme'
 const auth = useAuthStore()
 const meals = useMealsStore()
 const theme = useTheme()
+const toast = useToast()
 
 const syncWhenBackOnline = () => {
   void meals.syncIfOnline()
@@ -35,5 +38,19 @@ onUnmounted(() => {
         <component :is="Component" />
       </Transition>
     </RouterView>
+
+    <Toast group="meal" position="bottom-right">
+      <template #message="{ message }">
+        <div class="flex items-center justify-between w-full gap-4">
+          <span class="font-semibold text-sm">{{ message.summary }}</span>
+          <button
+            @click="() => { meals.undoLastLog((message as any).data.categoryId); toast.remove(message) }"
+            class="text-xs underline shrink-0 opacity-80 hover:opacity-100 transition-opacity"
+          >
+            Undo
+          </button>
+        </div>
+      </template>
+    </Toast>
   </div>
 </template>
