@@ -5,12 +5,6 @@ import { computed } from 'vue';
 
 const limits = useLimits();
 
-const monthlyProgressValue = computed(() => {
-  const value = limits.monthlyProgress.value * 100;
-  console.log(value);
-  return value === 0 ? 1 : value;
-});
-
 const warningColors: Record<string, string> = {
   green: 'text-green-400',
   yellow: 'text-yellow-400',
@@ -41,7 +35,7 @@ const warningColors: Record<string, string> = {
       />
     </div> -->
 
-    <ProgressBar :value="monthlyProgressValue" />
+    <ProgressBar :value="limits.monthlyProgress.value * 100" />
 
     <div class="flex justify-between text-xs">
       <span>Week: {{ limits.weeklyCount.value }}/{{ limits.weeklyLimit.value }}</span>

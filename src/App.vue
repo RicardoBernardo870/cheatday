@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useMealsStore } from '@/stores/meals'
 import { useTheme } from '@/composables/useTheme'
@@ -8,11 +8,20 @@ const auth = useAuthStore()
 const meals = useMealsStore()
 const theme = useTheme()
 
+const syncWhenBackOnline = () => {
+  void meals.syncIfOnline()
+}
+
 onMounted(async () => {
   theme.init()
   await auth.init()
-  window.addEventListener('focus', () => meals.syncIfOnline())
-  window.addEventListener('online', () => meals.syncIfOnline())
+  window.addEventListener('focus', syncWhenBackOnline)
+  window.addEventListener('online', syncWhenBackOnline)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('focus', syncWhenBackOnline)
+  window.removeEventListener('online', syncWhenBackOnline)
 })
 </script>
 
