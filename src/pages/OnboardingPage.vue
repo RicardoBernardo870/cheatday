@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { Button } from 'primevue';
 
 import LimitsForm from '@/components/LimitsForm.vue';
 import LimitsSummaryCard from '@/components/LimitsSummaryCard.vue';
@@ -54,13 +55,14 @@ async function finish() {
 
       <LimitsSummaryCard :monthlyLimit="monthlyLimit" :weeklyLimit="weeklyLimit" />
 
-      <button
+      <Button
         @click="finish"
         :disabled="saving"
-        class="w-full bg-primary text-white font-semibold rounded-xl py-4 text-lg transition-opacity disabled:opacity-50"
+        class="w-full"
+        :pt="{ root: { class: 'py-4 text-lg' } }"
       >
         {{ saving ? 'Saving...' : "Let's go 🚀" }}
-      </button>
+      </Button>
     </div>
   </div>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { Button } from 'primevue';
 
 import ThemeToggle from '@/components/ThemeToggle.vue';
 import LimitsForm from '@/components/LimitsForm.vue';
@@ -55,17 +56,22 @@ async function saveSettings() {
 
       <LimitsForm v-model:cheatPercentage="cheatPercentage" v-model:mealsPerDay="mealsPerDay" />
 
-      <button
-        @click="saveSettings"
-        :disabled="saving"
-        class="w-full bg-primary text-white font-semibold rounded-xl py-3 transition-opacity disabled:opacity-50"
-      >
+      <Button @click="saveSettings" :disabled="saving" class="w-full">
         {{ saving ? 'Saving...' : saved ? 'Saved ✓' : 'Save changes' }}
-      </button>
+      </Button>
     </div>
 
     <div class="pt-4">
-      <button @click="auth.signOut" class="w-full glass rounded-xl py-3 text-sm">Sign out</button>
+      <Button
+        @click="auth.signOut"
+        label="Sign out"
+        :pt="{
+          root: {
+            class: 'w-full glass rounded-xl py-3 text-sm text-[color:var(--color-text)] justify-center',
+          },
+        }"
+        :ptOptions="{ mergeSections: false, mergeProps: false }"
+      />
     </div>
   </div>
 </template>

@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { Button, InputText } from 'primevue';
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -33,6 +34,10 @@ async function submit() {
     loading.value = false;
   }
 }
+
+const textButtonPt = {
+  root: { class: 'text-sm underline bg-transparent border-none p-0 cursor-pointer' },
+} as const;
 </script>
 
 <template>
@@ -49,66 +54,72 @@ async function submit() {
       <p class="text-sm">
         We sent a sign-in link to <strong>{{ email }}</strong>
       </p>
-      <button @click="magicSent = false" class="text-primary text-sm underline">Try again</button>
+      <Button
+        @click="magicSent = false"
+        label="Try again"
+        :pt="{ root: { class: 'text-primary text-sm underline bg-transparent border-none p-0 cursor-pointer' } }"
+        :ptOptions="{ mergeSections: false, mergeProps: false }"
+      />
     </div>
 
     <form v-else @submit.prevent="submit" class="w-full max-w-sm space-y-4">
       <div>
         <label class="block text-sm mb-1">Email</label>
-        <input
+        <InputText
           v-model="email"
           type="email"
           required
           placeholder="you@example.com"
-          class="w-full bg-card border border-border rounded-xl px-4 py-3 text-white placeholder-muted focus:outline-none focus:border-primary transition-colors"
         />
       </div>
 
       <div v-if="mode !== 'magic'">
         <label class="block text-sm mb-1">Password</label>
-        <input
+        <InputText
           v-model="password"
           type="password"
           required
           placeholder="••••••••"
-          class="w-full bg-card border border-border rounded-xl px-4 py-3 text-white placeholder-muted focus:outline-none focus:border-primary transition-colors"
         />
       </div>
 
       <p v-if="error" class="text-red-400 text-sm">{{ error }}</p>
 
-      <button
-        type="submit"
-        :disabled="loading"
-        class="w-full bg-primary text-white font-semibold rounded-xl py-3 transition-opacity disabled:opacity-50"
-      >
+      <Button type="submit" :disabled="loading" class="w-full">
         <span v-if="loading">...</span>
         <span v-else-if="mode === 'signin'">Sign in</span>
         <span v-else-if="mode === 'signup'">Create account</span>
         <span v-else>Send magic link</span>
-      </button>
+      </Button>
 
       <div class="flex flex-col items-center gap-2 pt-2">
-        <button
+        <Button
           v-if="mode !== 'magic'"
           type="button"
+          label="Sign in with magic link instead"
           @click="mode = 'magic'"
-          class="text-sm underline"
+          :pt="textButtonPt"
+          :ptOptions="{ mergeSections: false, mergeProps: false }"
+        />
+        <Button
+          v-if="mode === 'signin'"
+          type="button"
+          @click="mode = 'signup'"
+          :pt="textButtonPt"
+          :ptOptions="{ mergeSections: false, mergeProps: false }"
         >
-          Sign in with magic link instead
-        </button>
-        <button v-if="mode === 'signin'" type="button" @click="mode = 'signup'" class="text-sm">
           No account? <span class="text-primary underline">Sign up</span>
-        </button>
-        <button
+        </Button>
+        <Button
           v-if="mode === 'signup' || mode === 'magic'"
           type="button"
           @click="mode = 'signin'"
-          class="text-sm"
+          :pt="textButtonPt"
+          :ptOptions="{ mergeSections: false, mergeProps: false }"
         >
           Already have an account?
           <span class="text-primary underline">Sign in</span>
-        </button>
+        </Button>
       </div>
     </form>
   </div>

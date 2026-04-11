@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useTheme } from '@/composables/useTheme';
+import { Button } from 'primevue';
 
 const theme = useTheme();
 const isDark = ref<boolean>(theme.current() === 'dark');
@@ -23,17 +24,22 @@ function toggle() {
           {{ isDark ? 'Dark mode' : 'Light mode' }}
         </span>
       </div>
-      <button
+      <Button
         @click="toggle"
         :aria-label="`Switch to ${isDark ? 'light' : 'dark'} mode`"
-        class="relative w-12 h-7 rounded-full transition-colors duration-200 focus:outline-none"
-        :style="{ background: isDark ? 'rgba(255,107,107,0.85)' : 'rgba(209,209,214,0.8)' }"
+        :pt="{
+          root: {
+            class: 'relative w-12 h-7 rounded-full transition-colors duration-200 focus:outline-none',
+            style: { background: isDark ? 'rgba(255,107,107,0.85)' : 'rgba(209,209,214,0.8)' },
+          },
+        }"
+        :ptOptions="{ mergeSections: false, mergeProps: false }"
       >
         <span
           class="absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-200"
           :style="{ transform: isDark ? 'translateX(20px)' : 'translateX(0)' }"
         />
-      </button>
+      </Button>
     </div>
   </div>
 </template>

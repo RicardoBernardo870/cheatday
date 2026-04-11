@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button, Slider } from 'primevue';
+
 defineProps<{
   cheatPercentage: number;
   mealsPerDay: number;
@@ -18,14 +20,13 @@ const emit = defineEmits<{
         <label class="font-medium">Cheat meal allowance</label>
         <span class="text-primary font-bold text-xl">{{ cheatPercentage }}%</span>
       </div>
-      <input
-        :value="cheatPercentage"
-        @input="emit('update:cheatPercentage', Number(($event.target as HTMLInputElement).value))"
-        type="range"
-        min="5"
-        max="40"
-        step="5"
-        class="w-full accent-primary"
+      <Slider
+        :model-value="cheatPercentage"
+        @update:model-value="emit('update:cheatPercentage', $event as number)"
+        :min="5"
+        :max="40"
+        :step="1"
+        class="w-full"
       />
       <div v-if="showHints" class="flex justify-between text-xs text-muted">
         <span>5% strict</span>
@@ -39,20 +40,24 @@ const emit = defineEmits<{
         <span class="text-primary font-bold text-xl">{{ mealsPerDay }}</span>
       </div>
       <div class="flex gap-3">
-        <button
+        <Button
           v-for="n in [2, 3, 4, 5]"
           :key="n"
           type="button"
+          :label="String(n)"
           @click="emit('update:mealsPerDay', n)"
-          :class="[
-            'flex-1 rounded-xl py-2 text-sm font-medium border transition-colors',
-            mealsPerDay === n
-              ? 'bg-primary border-primary text-white'
-              : 'glass-card border-border text-muted',
-          ]"
-        >
-          {{ n }}
-        </button>
+          :pt="{
+            root: {
+              class: [
+                'flex-1 rounded-xl py-2 text-sm font-medium border transition-colors',
+                mealsPerDay === n
+                  ? 'bg-primary border-primary text-white'
+                  : 'glass-card border-border text-muted',
+              ],
+            },
+          }"
+          :ptOptions="{ mergeSections: false, mergeProps: false }"
+        />
       </div>
     </div>
   </div>
