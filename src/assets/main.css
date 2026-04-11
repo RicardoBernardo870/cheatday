@@ -3,36 +3,90 @@
 @tailwind utilities;
 
 @layer base {
-  /* ─── CSS variables: dark theme (default) ────────────────── */
+  /* ─── Dark theme (default) ───────────────────────────────────── */
   :root {
-    --color-base: #12100e;
-    --color-text: #ffffff;
-    --color-text-muted: rgba(255, 255, 255, 0.4);
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-bg-strong: rgba(255, 255, 255, 0.08);
-    --glass-bg-card: rgba(255, 255, 255, 0.04);
-    --glass-bg-elevated: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-border-strong: rgba(255, 255, 255, 0.15);
-    --glass-border-card: rgba(255, 255, 255, 0.08);
-    --glass-border-elevated: rgba(255, 255, 255, 0.18);
-    --glass-inner-glow: rgba(255, 255, 255, 0.08);
+    /* Backgrounds */
+    --color-base:   #12100e;          /* Warm near-black — "Elevated Neutral" */
+    --color-base-2: #1d1a16;          /* Slightly elevated surface */
+
+    /* Typography */
+    --color-text:       #f5f0e8;
+    --color-text-muted: rgba(245, 240, 232, 0.45);
+
+    /* Brand */
+    --color-primary:      #FF823A;    /* Saffron Sunset */
+    --color-primary-glow: rgba(255, 130, 58, 0.35);
+    --color-success:      #5DC7B7;    /* Aquatic Mint */
+    --color-warn:         #FFBF5E;    /* Amber Glow */
+    --color-danger:       #A3152F;    /* Royal Burgundy */
+
+    /* ── Liquid Glass: variable blur per material thickness ─────── */
+    --glass-blur-thin:     blur(10px) saturate(160%);  /* systemUltraThinMaterial */
+    --glass-blur:          blur(25px) saturate(180%);  /* systemThinMaterial      */
+    --glass-blur-strong:   blur(25px) saturate(190%);  /* systemThickMaterial     */
+    --glass-blur-elevated: blur(30px) saturate(200%);  /* systemUltraThickMaterial */
+    --glass-blur-nav:      blur(15px) saturate(160%);  /* Tab bar — Liquid Glass Clear */
+
+    /* Glass backgrounds */
+    --glass-bg:          rgba(255, 255, 255, 0.05);
+    --glass-bg-card:     rgba(255, 255, 255, 0.04);
+    --glass-bg-strong:   rgba(255, 255, 255, 0.08);
+    --glass-bg-elevated: rgba(255, 255, 255, 0.11);
+
+    /* ── Rim light: directional inset shadows replace uniform borders ─
+       Bright top-left simulates light catching the glass edge;
+       dark bottom-right adds structural depth (PDF p.4 recommendation) */
+    --rim-top:    rgba(255, 255, 255, 0.18);
+    --rim-bottom: rgba(255, 255, 255, 0.04);
+    --rim-left:   rgba(255, 255, 255, 0.10);
+    --rim-right:  rgba(255, 255, 255, 0.02);
+
+    /* Drop shadows */
+    --glass-shadow:          0 8px 32px rgba(0, 0, 0, 0.50);
+    --glass-shadow-elevated: 0 16px 48px rgba(0, 0, 0, 0.60);
   }
 
-  /* ─── CSS variables: light theme ─────────────────────────── */
+  /* ─── Light theme ────────────────────────────────────────────── */
   :root:not(.dark) {
-    --color-base: #f8f5f0;
-    --color-text: #2f3241;
-    --color-text-muted: #2f3241;
-    --glass-bg: rgba(255, 255, 255, 0.55);
-    --glass-bg-strong: rgba(255, 255, 255, 0.7);
-    --glass-bg-card: rgba(255, 255, 255, 0.5);
-    --glass-bg-elevated: rgba(255, 255, 255, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.8);
-    --glass-border-strong: rgba(255, 255, 255, 0.9);
-    --glass-border-card: rgba(209, 209, 214, 0.6);
-    --glass-border-elevated: rgba(255, 255, 255, 0.95);
-    --glass-inner-glow: rgba(255, 255, 255, 0.6);
+    /* Backgrounds */
+    --color-base:   #F8F5F0;          /* Soft Linen */
+    --color-base-2: #EDE9E3;
+
+    /* Typography */
+    --color-text:       #2F3241;      /* Charcoal Slate */
+    --color-text-muted: rgba(47, 50, 65, 0.50);
+
+    /* Brand — identical across themes */
+    --color-primary:      #FF823A;
+    --color-primary-glow: rgba(255, 130, 58, 0.20);
+    --color-success:      #5DC7B7;
+    --color-warn:         #FFBF5E;
+    --color-danger:       #A3152F;
+
+    /* ── Liquid Glass light mode (2026 WWDC spec) ───────────────────
+       Lower opacity preserves background depth — high opacity flattens.
+       Saturation kept lower so linen tones don't over-saturate. */
+    --glass-blur-thin:     blur(10px) saturate(140%);
+    --glass-blur:          blur(25px) saturate(160%);
+    --glass-blur-strong:   blur(25px) saturate(165%);
+    --glass-blur-elevated: blur(30px) saturate(180%);
+    --glass-blur-nav:      blur(15px) saturate(150%);
+
+    /* Glass backgrounds — low opacity to let linen bg show through */
+    --glass-bg:          rgba(255, 255, 255, 0.22);
+    --glass-bg-card:     rgba(255, 255, 255, 0.18);
+    --glass-bg-strong:   rgba(255, 255, 255, 0.38);
+    --glass-bg-elevated: rgba(255, 255, 255, 0.58);
+
+    /* Rim light — brighter in light; captures real-world glass physics */
+    --rim-top:    rgba(255, 255, 255, 0.75);
+    --rim-bottom: rgba(200, 196, 190, 0.20);
+    --rim-left:   rgba(255, 255, 255, 0.50);
+    --rim-right:  rgba(200, 196, 190, 0.10);
+
+    /* Drop shadows — softer in light mode */
+    --glass-shadow:          0 4px 24px rgba(47, 50, 65, 0.08);
+    --glass-shadow-elevated: 0 12px 40px rgba(47, 50, 65, 0.14);
   }
 
   html,
@@ -41,8 +95,8 @@
     color: var(--color-text);
     overscroll-behavior: none;
     transition:
-      background-color 0.2s ease,
-      color 0.2s ease;
+      background-color 0.3s ease,
+      color 0.3s ease;
   }
 
   html {
@@ -57,7 +111,7 @@
 }
 
 @layer utilities {
-  /* ─── iPhone safe area ───────────────────────────────── */
+  /* ─── iPhone safe area ──────────────────────────────────────── */
   .pb-safe {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
@@ -65,49 +119,103 @@
     padding-top: env(safe-area-inset-top);
   }
 
-  /* ─── Apple Glass utilities (theme-aware via CSS vars) ── */
+  /* ─── Liquid Glass Material System ─────────────────────────────
+     Rim light via inset box-shadows replaces the old static 1px border.
+     will-change promotes each element to its own compositor layer (GPU).
+  ────────────────────────────────────────────────────────────────── */
 
-  .glass {
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-  }
-
-  .glass-strong {
-    backdrop-filter: blur(32px) saturate(200%);
-    -webkit-backdrop-filter: blur(32px) saturate(200%);
-    background: var(--glass-bg-strong);
-    border: 1px solid var(--glass-border-strong);
-  }
-
-  .glass-card {
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  /* systemUltraThinMaterial — context menus, tooltips, nav */
+  .glass-thin {
+    backdrop-filter: var(--glass-blur-thin);
+    -webkit-backdrop-filter: var(--glass-blur-thin);
     background: var(--glass-bg-card);
-    border: 1px solid var(--glass-border-card);
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 var(--glass-inner-glow);
+      inset 0  1px 0 var(--rim-top),
+      inset 0 -1px 0 var(--rim-bottom),
+      inset  1px 0 0 var(--rim-left),
+      inset -1px 0 0 var(--rim-right),
+      var(--glass-shadow);
+    will-change: transform, backdrop-filter;
   }
 
+  /* systemThinMaterial — standard interactive surfaces */
+  .glass {
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    background: var(--glass-bg);
+    box-shadow:
+      inset 0  1px 0 var(--rim-top),
+      inset 0 -1px 0 var(--rim-bottom),
+      inset  1px 0 0 var(--rim-left),
+      inset -1px 0 0 var(--rim-right),
+      var(--glass-shadow);
+    will-change: transform, backdrop-filter;
+  }
+
+  /* systemMaterial — daily log cards, main content */
+  .glass-card {
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    background: var(--glass-bg-card);
+    box-shadow:
+      inset 0  1px 0 var(--rim-top),
+      inset 0 -1px 0 var(--rim-bottom),
+      inset  1px 0 0 var(--rim-left),
+      inset -1px 0 0 var(--rim-right),
+      var(--glass-shadow);
+    will-change: transform, backdrop-filter;
+  }
+
+  /* systemThickMaterial — emphasized sections */
+  .glass-strong {
+    backdrop-filter: var(--glass-blur-strong);
+    -webkit-backdrop-filter: var(--glass-blur-strong);
+    background: var(--glass-bg-strong);
+    box-shadow:
+      inset 0  1px 0 var(--rim-top),
+      inset 0 -1px 0 var(--rim-bottom),
+      inset  1px 0 0 var(--rim-left),
+      inset -1px 0 0 var(--rim-right),
+      var(--glass-shadow);
+    will-change: transform, backdrop-filter;
+  }
+
+  /* systemUltraThickMaterial — modals, reward layer */
   .glass-elevated {
-    backdrop-filter: blur(40px) saturate(200%);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    backdrop-filter: var(--glass-blur-elevated);
+    -webkit-backdrop-filter: var(--glass-blur-elevated);
     background: var(--glass-bg-elevated);
-    border: 1px solid var(--glass-border-elevated);
     box-shadow:
-      0 16px 48px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 var(--glass-inner-glow);
+      inset 0  1px 0 var(--rim-top),
+      inset 0 -1px 0 var(--rim-bottom),
+      inset  1px 0 0 var(--rim-left),
+      inset -1px 0 0 var(--rim-right),
+      var(--glass-shadow-elevated);
+    will-change: transform, backdrop-filter;
   }
 
+  /* Saffron primary — CTA buttons, key actions */
   .glass-primary {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    background: rgba(255, 107, 107, 0.85);
-    border: 1px solid rgba(255, 107, 107, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 130, 58, 0.90);
     box-shadow:
-      0 4px 16px rgba(255, 107, 107, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      inset 0  1px 0 rgba(255, 215, 170, 0.45),
+      inset 0 -1px 0 rgba(180, 80, 20, 0.25),
+      0 4px 20px var(--color-primary-glow);
+    will-change: transform, backdrop-filter;
+  }
+
+  /* ─── Reduced Transparency fallback (accessibility) ─────────── */
+  @media (prefers-reduced-transparency: reduce) {
+    .glass,
+    .glass-thin,
+    .glass-card,
+    .glass-strong,
+    .glass-elevated {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      background: var(--color-base-2);
+    }
   }
 }

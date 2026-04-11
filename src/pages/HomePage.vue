@@ -33,7 +33,7 @@ const handleLongPress = async (categoryId: string) => {
         :key="cat.id"
         @click="handleTap(cat.id)"
         @contextmenu.prevent="handleLongPress(cat.id)"
-        class="glass-card rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-95 transition-transform border border-border"
+        class="glass-card rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-95 transition-transform"
       >
         <span class="text-4xl">{{ cat.icon }}</span>
         <span class="text-sm font-medium">{{ cat.name }}</span>

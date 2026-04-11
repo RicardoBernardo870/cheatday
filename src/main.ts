@@ -5,17 +5,15 @@ import ToastService from 'primevue/toastservice';
 import App from './App.vue';
 import router from './router';
 import './assets/main.css';
+import { pt } from './primevue/pt';
 
 const app = createApp(App);
 
 app.use(createPinia());
 app.use(router);
 
-// PrimeVue in unstyled mode — we apply all styles via Tailwind + glass utilities
-app.use(PrimeVue, {
-  unstyled: true,
-});
-
+// PrimeVue in unstyled mode — all styling lives in src/primevue/pt.ts
+app.use(PrimeVue, { unstyled: true, pt });
 app.use(ToastService);
 
 app.mount('#app');

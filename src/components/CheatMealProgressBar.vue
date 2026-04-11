@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useLimits } from '@/composables/useLimits';
 import { ProgressBar } from 'primevue';
-import { computed } from 'vue';
 
 const limits = useLimits();
 
@@ -22,20 +21,7 @@ const warningColors: Record<string, string> = {
       </span>
     </div>
 
-    <!-- <div class="h-2 bg-card rounded-full overflow-hidden">
-      <div
-        class="h-full rounded-full transition-all duration-300"
-        :class="{
-          'bg-green-400': limits.monthlyWarning.value === 'green',
-          'bg-yellow-400': limits.monthlyWarning.value === 'yellow',
-          'bg-orange-400': limits.monthlyWarning.value === 'orange',
-          'bg-red-400': limits.monthlyWarning.value === 'red',
-        }"
-        :style="{ width: `${limits.monthlyProgress.value * 100}%` }"
-      />
-    </div> -->
-
-    <ProgressBar :value="limits.monthlyProgress.value * 100" />
+    <ProgressBar :value="limits.monthlyProgress.value * 100" :show-value="false" />
 
     <div class="flex justify-between text-xs">
       <span>Week: {{ limits.weeklyCount.value }}/{{ limits.weeklyLimit.value }}</span>

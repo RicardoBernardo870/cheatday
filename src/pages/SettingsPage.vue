@@ -109,7 +109,7 @@ async function saveSettings() {
             :key="n"
             @click="mealsPerDay = n"
             :class="[
-              'flex-1 rounded-xl py-2 text-sm font-medium border transition-colors',
+              'flex-1 rounded-xl py-2 text-sm font-medium transition-colors',
               mealsPerDay === n
                 ? 'bg-primary border-primary text-white'
                 : 'glass-card border-border text-muted',
@@ -130,9 +130,7 @@ async function saveSettings() {
     </div>
 
     <div class="pt-4">
-      <button @click="auth.signOut" class="w-full border border-border rounded-xl py-3 text-sm">
-        Sign out
-      </button>
+      <button @click="auth.signOut" class="w-full glass rounded-xl py-3 text-sm">Sign out</button>
     </div>
   </div>
 </template>

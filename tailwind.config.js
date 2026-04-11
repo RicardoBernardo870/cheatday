@@ -5,16 +5,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Brand
-        primary: '#FF823A',
-        secondary: '#FFA07A',
-        // Status
-        warn: '#FFD700',
-        danger: '#FF4444',
-        // Glass-first neutrals (replaces opaque card/surface)
-        surface: 'rgba(255,255,255,0.04)',
-        card: 'rgba(255,255,255,0.06)',
-        border: 'rgba(255,255,255,0.08)',
+        // Brand — matches CSS variables in main.css
+        primary:   '#FF823A',    // Saffron Sunset
+        secondary: '#5DC7B7',    // Aquatic Mint (doubles as success)
+        success:   '#5DC7B7',    // Aquatic Mint
+        warn:      '#FFBF5E',    // Amber Glow
+        danger:    '#A3152F',    // Royal Burgundy
+
         // Base background — references CSS variable so it reacts to theme toggle
         base: 'var(--color-base)',
       },
@@ -25,34 +22,40 @@ export default {
         safe: 'env(safe-area-inset-bottom)',
       },
       backdropBlur: {
-        xs: '4px',
-        glass: '20px',
-        'glass-strong': '32px',
-        'glass-elevated': '40px',
+        xs:              '4px',
+        'glass-thin':    '10px',
+        glass:           '25px',
+        'glass-strong':  '25px',
+        'glass-elevated':'30px',
+        'glass-nav':     '15px',
       },
       boxShadow: {
-        glass: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)',
-        'glass-elevated': '0 16px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12)',
-        'glass-primary': '0 4px 16px rgba(255,107,107,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
-        'glow-primary': '0 0 20px rgba(255,107,107,0.4)',
+        // Saffron primary glow
+        'glass-primary':  '0 4px 20px rgba(255,130,58,0.30), inset 0 1px 0 rgba(255,215,170,0.40)',
+        'glow-primary':   '0 0 24px rgba(255,130,58,0.45)',
+        'glow-success':   '0 0 16px rgba(93,199,183,0.45)',
+        'glow-warn':      '0 0 16px rgba(255,191,94,0.45)',
       },
       borderRadius: {
         '4xl': '2rem',
       },
       animation: {
-        'fade-in': 'fadeIn 0.2s ease-out',
+        'fade-in':  'fadeIn 0.2s ease-out',
         'slide-up': 'slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
         'scale-in': 'scaleIn 0.15s ease-out',
       },
       keyframes: {
-        fadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
+        fadeIn: {
+          from: { opacity: '0' },
+          to:   { opacity: '1' },
+        },
         slideUp: {
           from: { opacity: '0', transform: 'translateY(16px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
         },
         scaleIn: {
           from: { opacity: '0', transform: 'scale(0.95)' },
-          to: { opacity: '1', transform: 'scale(1)' },
+          to:   { opacity: '1', transform: 'scale(1)' },
         },
       },
     },
