@@ -6,7 +6,7 @@ export default {
     extend: {
       colors: {
         // Brand
-        primary: '#FF6B6B',
+        primary: '#FF823A',
         secondary: '#FFA07A',
         // Status
         warn: '#FFD700',
@@ -15,7 +15,6 @@ export default {
         surface: 'rgba(255,255,255,0.04)',
         card: 'rgba(255,255,255,0.06)',
         border: 'rgba(255,255,255,0.08)',
-        muted: 'rgba(255,255,255,0.4)',
         // Base background — references CSS variable so it reacts to theme toggle
         base: 'var(--color-base)',
       },

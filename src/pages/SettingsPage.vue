@@ -112,7 +112,7 @@ async function saveSettings() {
               'flex-1 rounded-xl py-2 text-sm font-medium border transition-colors',
               mealsPerDay === n
                 ? 'bg-primary border-primary text-white'
-                : 'glass border-border text-muted',
+                : 'glass-card border-border text-muted',
             ]"
           >
             {{ n }}
@@ -130,10 +130,7 @@ async function saveSettings() {
     </div>
 
     <div class="pt-4">
-      <button
-        @click="auth.signOut"
-        class="w-full border border-border text-muted rounded-xl py-3 text-sm"
-      >
+      <button @click="auth.signOut" class="w-full border border-border rounded-xl py-3 text-sm">
         Sign out
       </button>
     </div>

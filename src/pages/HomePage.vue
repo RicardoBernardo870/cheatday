@@ -12,13 +12,13 @@ onMounted(async () => {
   await Promise.all([categories.fetch(), meals.fetchCurrentMonth()]);
 });
 
-async function handleTap(categoryId: string) {
+const handleTap = async (categoryId: string) => {
   await meals.logMeal(categoryId);
-}
+};
 
-async function handleLongPress(categoryId: string) {
+const handleLongPress = async (categoryId: string) => {
   await meals.undoLastLog(categoryId);
-}
+};
 
 const warningColors: Record<string, string> = {
   green: 'text-green-400',
@@ -32,7 +32,7 @@ const warningColors: Record<string, string> = {
   <div class="px-4 py-6 space-y-6">
     <div class="space-y-1">
       <div class="flex justify-between text-sm">
-        <span class="text-muted">This month</span>
+        <span class="">This month</span>
         <span :class="warningColors[limits.monthlyWarning.value]" class="font-semibold">
           {{ limits.monthlyCount.value }} / {{ limits.monthlyLimit.value }}
         </span>
@@ -82,18 +82,15 @@ const warningColors: Record<string, string> = {
         <span class="text-2xl font-bold" :style="{ color: cat.color }">
           {{ limits.countForCategory(cat.id, 'month') }}
         </span>
-        <span class="text-xs text-muted">this month</span>
+        <span class="text-xs">this month</span>
       </button>
     </div>
 
-    <div
-      v-if="categories.categories.length === 0 && !categories.loading"
-      class="text-center py-10 text-muted"
-    >
+    <div v-if="categories.categories.length === 0 && !categories.loading" class="text-center py-10">
       <div class="text-4xl mb-2">🍽️</div>
       <p>No categories yet</p>
     </div>
 
-    <p class="text-center text-xs text-muted pt-2">Tap to log · Long press to undo</p>
+    <p class="text-center text-xs pt-2">Tap to log · Long press to undo</p>
   </div>
 </template>

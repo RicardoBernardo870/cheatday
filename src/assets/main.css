@@ -5,7 +5,7 @@
 @layer base {
   /* ─── CSS variables: dark theme (default) ────────────────── */
   :root {
-    --color-base: #0a0a0a;
+    --color-base: #12100e;
     --color-text: #ffffff;
     --color-text-muted: rgba(255, 255, 255, 0.4);
     --glass-bg: rgba(255, 255, 255, 0.05);
@@ -21,9 +21,9 @@
 
   /* ─── CSS variables: light theme ─────────────────────────── */
   :root:not(.dark) {
-    --color-base: #f2f2f7;
-    --color-text: #1c1c1e;
-    --color-text-muted: rgba(0, 0, 0, 0.45);
+    --color-base: #f8f5f0;
+    --color-text: #2f3241;
+    --color-text-muted: #2f3241;
     --glass-bg: rgba(255, 255, 255, 0.55);
     --glass-bg-strong: rgba(255, 255, 255, 0.7);
     --glass-bg-card: rgba(255, 255, 255, 0.5);
