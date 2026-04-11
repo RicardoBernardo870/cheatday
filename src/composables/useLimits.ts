@@ -56,7 +56,7 @@ export const useLimits = () => {
     ).length;
   });
 
-  function countForCategory(categoryId: string, period: 'today' | 'week' | 'month' = 'month') {
+  const countForCategory = (categoryId: string, period: 'today' | 'week' | 'month' = 'month') => {
     const now = new Date();
     return meals.logs.filter((log) => {
       if (log.category_id !== categoryId) return false;
@@ -71,9 +71,9 @@ export const useLimits = () => {
       }
       return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
     }).length;
-  }
+  };
 
-  function warningLevel(used: number, limit: number): WarningLevel {
+  const warningLevel = (used: number, limit: number): WarningLevel => {
     if (limit === 0) return 'green';
     const pct = used / limit;
     if (pct >= 1) return 'red';

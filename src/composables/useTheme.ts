@@ -2,16 +2,14 @@ type Theme = 'dark' | 'light';
 
 const STORAGE_KEY = 'cheatday-theme';
 
-const getSystemTheme = (): Theme => {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-};
+const getSystemTheme = (): Theme =>
+  window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
 const applyTheme = (theme: Theme) => {
-  const root = document.documentElement;
   if (theme === 'dark') {
-    root.classList.add('dark');
+    document.documentElement.classList.add('dark');
   } else {
-    root.classList.remove('dark');
+    document.documentElement.classList.remove('dark');
   }
 };
 
@@ -23,7 +21,6 @@ export const useTheme = () => {
     const theme = stored ?? getSystemTheme();
     applyTheme(theme);
 
-    // Keep in sync if user changes system preference and has no stored override
     if (!systemThemeListenerAttached) {
       systemThemeListenerAttached = true;
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
@@ -34,9 +31,8 @@ export const useTheme = () => {
     }
   };
 
-  const current = (): Theme => {
-    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-  };
+  const current = (): Theme =>
+    document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 
   const toggle = () => {
     const next: Theme = current() === 'dark' ? 'light' : 'dark';

@@ -23,7 +23,7 @@ watch(
   }
 );
 
-async function saveSettings() {
+const saveSettings = async () => {
   saving.value = true;
   try {
     await auth.updateProfile({
@@ -35,7 +35,7 @@ async function saveSettings() {
   } finally {
     saving.value = false;
   }
-}
+};
 </script>
 
 <template>

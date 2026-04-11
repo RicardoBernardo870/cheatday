@@ -6,10 +6,10 @@ import { Button } from 'primevue';
 const theme = useTheme();
 const isDark = ref<boolean>(theme.current() === 'dark');
 
-function toggle() {
+const toggle = () => {
   theme.toggle();
   isDark.value = theme.current() === 'dark';
-}
+};
 </script>
 
 <template>

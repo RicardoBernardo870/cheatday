@@ -15,7 +15,7 @@
 
 // ── Progress bar colour based on usage % ─────────────────────────────────
 // green(<40%) → amber(40-80%) → saffron(80-100%) → burgundy(≥100%)
-function progressColor(value: number | null | undefined): string {
+const progressColor = (value: number | null | undefined): string => {
   const v = value ?? 0;
   if (v < 40)  return 'bg-success  shadow-[0_0_12px_rgba(93,199,183,0.55)]';
   if (v < 80)  return 'bg-warn     shadow-[0_0_10px_rgba(255,191,94,0.50)]';

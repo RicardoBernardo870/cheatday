@@ -14,13 +14,15 @@ const cheatPercentage = ref<number>(20);
 const mealsPerDay = ref<number>(3);
 const saving = ref<boolean>(false);
 
-const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+const daysInMonth = computed(
+  () => new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()
+);
 const monthlyLimit = computed(() =>
-  Math.round(mealsPerDay.value * daysInMonth * (cheatPercentage.value / 100))
+  Math.round(mealsPerDay.value * daysInMonth.value * (cheatPercentage.value / 100))
 );
 const weeklyLimit = computed(() => Math.round(monthlyLimit.value / 4.33));
 
-async function finish() {
+const finish = async () => {
   saving.value = true;
   try {
     await auth.updateProfile({
@@ -36,7 +38,7 @@ async function finish() {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-[#0f0f0f] px-6 pt-safe">
+  <div class="flex flex-col min-h-screen bg-[color:var(--color-bg)] px-6 pt-safe">
     <div class="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full space-y-8">
       <div class="text-center">
         <div class="text-5xl mb-4">🎯</div>

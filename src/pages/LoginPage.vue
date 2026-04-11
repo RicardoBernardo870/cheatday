@@ -14,7 +14,7 @@ const loading = ref<boolean>(false);
 const mode = ref<'signin' | 'signup' | 'magic'>('signin');
 const magicSent = ref<boolean>(false);
 
-async function submit() {
+const submit = async () => {
   error.value = '';
   loading.value = true;
   try {
@@ -33,7 +33,7 @@ async function submit() {
   } finally {
     loading.value = false;
   }
-}
+};
 
 const textButtonPt = {
   root: { class: 'text-sm underline bg-transparent border-none p-0 cursor-pointer' },
@@ -41,7 +41,7 @@ const textButtonPt = {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-[#0f0f0f] items-center justify-center px-6 pt-safe">
+  <div class="flex flex-col min-h-screen bg-[color:var(--color-bg)] items-center justify-center px-6 pt-safe">
     <div class="mb-10 text-center">
       <div class="text-6xl mb-3">🍔</div>
       <h1 class="text-3xl font-bold tracking-tight">CheatDay</h1>
