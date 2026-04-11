@@ -30,6 +30,10 @@ onUnmounted(() => {
     <div v-if="auth.loading" class="flex items-center justify-center min-h-screen">
       <div class="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
     </div>
-    <RouterView v-else />
+    <RouterView v-else v-slot="{ Component }">
+      <Transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </Transition>
+    </RouterView>
   </div>
 </template>

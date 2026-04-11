@@ -1,21 +1,42 @@
 <script setup lang="ts">
 import { RouterView, RouterLink, useRoute } from 'vue-router';
+import { Toast } from 'primevue';
+import { useMealsStore } from '@/stores/meals';
 
 const route = useRoute();
+const meals = useMealsStore();
 </script>
 
 <template>
   <div class="flex flex-col min-h-screen">
     <main class="flex-1 overflow-y-auto pt-safe pb-[calc(5rem+env(safe-area-inset-bottom))]">
-      <RouterView />
+      <RouterView v-slot="{ Component }">
+        <Transition name="fade" mode="out-in">
+          <component :is="Component" :key="route.name" />
+        </Transition>
+      </RouterView>
     </main>
+
+    <Toast group="meal" position="top-center">
+      <template #message="{ message, closeCallback }">
+        <div class="flex items-center justify-between w-full gap-4">
+          <span class="font-semibold text-sm">{{ message.summary }}</span>
+          <button
+            @click="() => { meals.undoLastLog(message.data.categoryId); closeCallback() }"
+            class="text-xs underline shrink-0 opacity-80 hover:opacity-100"
+          >
+            Undo
+          </button>
+        </div>
+      </template>
+    </Toast>
 
     <nav class="pb-safe">
       <div class="glass-card fixed bottom-0 w-full flex justify-around items-center h-20 pb-safe">
         <RouterLink
           to="/"
           :class="[
-            'flex flex-col items-center gap-1 text-xs transition-colors',
+            'flex flex-col items-center gap-1 text-xs transition-colors min-w-[44px] min-h-[44px] justify-center',
             route.name === 'home' ? 'text-primary' : 'text-muted',
           ]"
         >
@@ -26,7 +47,7 @@ const route = useRoute();
         <RouterLink
           to="/stats"
           :class="[
-            'flex flex-col items-center gap-1 text-xs transition-colors',
+            'flex flex-col items-center gap-1 text-xs transition-colors min-w-[44px] min-h-[44px] justify-center',
             route.name === 'stats' ? 'text-primary' : 'text-muted',
           ]"
         >
@@ -37,7 +58,7 @@ const route = useRoute();
         <RouterLink
           to="/settings"
           :class="[
-            'flex flex-col items-center gap-1 text-xs transition-colors',
+            'flex flex-col items-center gap-1 text-xs transition-colors min-w-[44px] min-h-[44px] justify-center',
             route.name === 'settings' ? 'text-primary' : 'text-muted',
           ]"
         >
