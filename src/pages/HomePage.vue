@@ -1,19 +1,30 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
 import type { ToastMessageOptions } from 'primevue/toast';
 import { useCategoriesStore } from '@/stores/categories';
 import { useMealsStore } from '@/stores/meals';
+import { useStatsStore } from '@/stores/stats';
 import { useLimits } from '@/composables/useLimits';
 
 import CheatMealProgressBar from '@/components/CheatMealProgressBar.vue';
 import CategoryCard from '@/components/CategoryCard.vue';
 import SkeletonCard from '@/components/SkeletonCard.vue';
+import PastMealModal from '@/components/PastMealModal.vue';
+import { Button } from 'primevue';
 
 const categories = useCategoriesStore();
 const meals = useMealsStore();
+const stats = useStatsStore();
 const limits = useLimits();
 const toast = useToast();
+
+const showPastMealModal = ref(false);
+
+const onPastMealLogged = (date: Date) => {
+  stats.invalidate(date.getFullYear());
+  stats.fetchAllTime();
+};
 
 onMounted(async () => {
   await Promise.all([categories.fetch(), meals.fetchCurrentMonth()]);
@@ -74,5 +85,14 @@ const handleLongPress = async (categoryId: string) => {
     </div>
 
     <p class="text-center text-xs pt-2 text-muted">Tap to log · Long press to undo</p>
+
+    <Button
+      @click="showPastMealModal = true"
+      class="mx-auto pt-1"
+    >
+      Missed a meal? Log for a past date
+    </Button>
+
+    <PastMealModal v-model:visible="showPastMealModal" @logged="onPastMealLogged" />
   </div>
 </template>

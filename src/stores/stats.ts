@@ -59,6 +59,16 @@ export const useStatsStore = defineStore('stats', () => {
     }
   );
 
+  const invalidate = (year?: number) => {
+    allTimeLoaded.value = false;
+    if (year !== undefined) {
+      const { [year]: _, ...rest } = yearlyCache.value;
+      yearlyCache.value = rest;
+    } else {
+      yearlyCache.value = {};
+    }
+  };
+
   return {
     freePassIds,
     allTimeTrackedLogs,
@@ -67,5 +77,6 @@ export const useStatsStore = defineStore('stats', () => {
     fetchAllTime,
     fetchYearly,
     getYearlyCounts,
+    invalidate,
   };
 });

@@ -44,6 +44,7 @@ onUnmounted(() => {
         <div class="flex items-center justify-between w-full gap-4">
           <span class="font-semibold text-sm">{{ message.summary }}</span>
           <button
+            v-if="(message as any).data?.canUndo !== false"
             @click="() => { meals.undoLastLog((message as any).data.categoryId); toast.remove(message) }"
             class="text-xs underline shrink-0 opacity-80 hover:opacity-100 transition-opacity"
           >

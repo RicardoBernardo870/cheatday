@@ -235,6 +235,89 @@ export const pt = {
     panel: { class: 'mt-3' },
   },
 
+  /* ═══════════════════════ DATEPICKER ══════════════════════════════════ */
+  datepicker: {
+    root: { class: 'w-full' },
+    pcInput: {
+      root: {
+        class: [
+          'glass w-full px-3 py-2.5 rounded-xl',
+          'text-[color:var(--color-text)]',
+          'focus:outline-none focus:ring-2 focus:ring-success/60',
+        ],
+      },
+    },
+    panel: {
+      class: [
+        'glass-strong rounded-2xl mt-2 overflow-hidden p-3',
+        'shadow-[0_16px_48px_rgba(0,0,0,0.35)]',
+      ],
+    },
+    calendar: { class: 'w-full' },
+    header: { class: 'flex items-center justify-between mb-2' },
+    pcPreviousButton: {
+      root: {
+        class: [
+          'p-1.5 rounded-lg',
+          'text-[color:var(--color-text-muted)]',
+          'hover:text-[color:var(--color-text)] hover:bg-white/10',
+          'transition-colors',
+        ],
+      },
+    },
+    pcNextButton: {
+      root: {
+        class: [
+          'p-1.5 rounded-lg',
+          'text-[color:var(--color-text-muted)]',
+          'hover:text-[color:var(--color-text)] hover:bg-white/10',
+          'transition-colors',
+        ],
+      },
+    },
+    title: { class: 'font-semibold text-sm text-[color:var(--color-text)] cursor-pointer' },
+    dayView: { class: 'w-full border-collapse' },
+    tableHeaderCell: {
+      class: 'text-xs text-[color:var(--color-text-muted)] text-center p-1.5 font-medium',
+    },
+    tableBody: { class: '' },
+    tableBodyRow: { class: '' },
+    dayCell: { class: 'p-0.5 text-center' },
+    day: ({ context }: { context: { selected: boolean; disabled: boolean; today: boolean; otherMonth: boolean } }) => ({
+      class: [
+        'w-8 h-8 mx-auto rounded-lg text-xs inline-flex items-center justify-center transition-all',
+        context.selected
+          ? 'glass-primary text-white font-bold'
+          : context.today
+            ? 'font-bold text-primary'
+            : context.otherMonth
+              ? 'text-[color:var(--color-text-muted)] opacity-40'
+              : 'text-[color:var(--color-text)] hover:bg-white/10 cursor-pointer',
+        context.disabled ? 'opacity-30 !cursor-not-allowed pointer-events-none' : '',
+      ],
+    }),
+    monthView: { class: 'grid grid-cols-3 gap-2 my-2' },
+    month: ({ context }: { context: { selected: boolean; disabled: boolean } }) => ({
+      class: [
+        'py-2 rounded-lg text-sm transition-all',
+        context.selected
+          ? 'glass-primary text-white font-bold'
+          : 'text-[color:var(--color-text)] hover:bg-white/10 cursor-pointer',
+        context.disabled ? 'opacity-30 !cursor-not-allowed pointer-events-none' : '',
+      ],
+    }),
+    yearView: { class: 'grid grid-cols-4 gap-2 my-2' },
+    year: ({ context }: { context: { selected: boolean; disabled: boolean } }) => ({
+      class: [
+        'py-2 rounded-lg text-sm transition-all',
+        context.selected
+          ? 'glass-primary text-white font-bold'
+          : 'text-[color:var(--color-text)] hover:bg-white/10 cursor-pointer',
+        context.disabled ? 'opacity-30 !cursor-not-allowed pointer-events-none' : '',
+      ],
+    }),
+  },
+
   /* ═══════════════════════ CHECKBOX ════════════════════════════════════ */
   checkbox: {
     root: {

@@ -86,30 +86,46 @@ export const useMealsStore = defineStore('meals', () => {
     return data as MealLog[];
   };
 
-  const logMeal = async (categoryId: string) => {
+  const logMeal = async (categoryId: string, date?: Date) => {
     const auth = useAuthStore();
     if (!auth.user) return;
+
+    const now = new Date();
+    const logDate = date ?? now;
+
+    // Combine selected date with current time for chronological ordering within the day
+    const loggedAt = new Date(
+      logDate.getFullYear(),
+      logDate.getMonth(),
+      logDate.getDate(),
+      now.getHours(),
+      now.getMinutes(),
+      now.getSeconds()
+    ).toISOString();
+
+    const isCurrentMonth =
+      logDate.getMonth() === now.getMonth() && logDate.getFullYear() === now.getFullYear();
 
     const newLog: Omit<MealLog, 'id' | 'created_at'> = {
       user_id: auth.user.id,
       category_id: categoryId,
-      logged_at: new Date().toISOString(),
+      logged_at: loggedAt,
     };
 
     if (!navigator.onLine) {
       const tempLog: MealLog = {
         ...newLog,
         id: `offline-${Date.now()}`,
-        created_at: newLog.logged_at,
+        created_at: loggedAt,
       };
-      logs.value.unshift(tempLog);
+      if (isCurrentMonth) logs.value.unshift(tempLog);
       await queueOfflineLog(newLog);
       return;
     }
 
     const { data, error } = await supabase.from('meal_logs').insert(newLog).select().single();
     if (error) throw error;
-    if (data) logs.value.unshift(data as MealLog);
+    if (data && isCurrentMonth) logs.value.unshift(data as MealLog);
   };
 
   const undoLastLog = async (categoryId: string) => {

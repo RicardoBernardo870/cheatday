@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMealsStore } from '@/stores/meals';
 import { useCategoriesStore } from '@/stores/categories';
@@ -17,6 +17,7 @@ import CheatCalendar from '@/components/CheatCalendar.vue';
 import CategoryDonut from '@/components/CategoryDonut.vue';
 import WeeklyTrendBar from '@/components/WeeklyTrendBar.vue';
 import YearlyTrendBar from '@/components/YearlyTrendBar.vue';
+import PastMealModal from '@/components/PastMealModal.vue';
 
 const meals = useMealsStore();
 const categories = useCategoriesStore();
@@ -31,10 +32,31 @@ const {
   statsLoading,
   isCurrentMonth,
   monthLabel,
+  loadMonth,
   prevMonth,
   nextMonth,
   resetToCurrentMonth,
 } = useMonthNavigation();
+
+// ── Past meal modal ────────────────────────────────────────────────────────
+const showPastMealModal = ref(false);
+const pastMealDate = ref<Date>();
+
+const onDaySelected = (date: Date | null) => {
+  if (!date) return;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selected = new Date(date);
+  selected.setHours(0, 0, 0, 0);
+  if (selected > today) return;
+  pastMealDate.value = date;
+  showPastMealModal.value = true;
+};
+
+const onPastMealLogged = async (date: Date) => {
+  stats.invalidate(date.getFullYear());
+  await Promise.all([loadMonth(), stats.fetchYearly(selectedYear.value), stats.fetchAllTime()]);
+};
 
 const { trackedLogs, trackedCount, categoryDonutData, freePassData, weeklyBarData } =
   useStatsData(displayLogs, selectedYear, selectedMonth);
@@ -109,7 +131,12 @@ onMounted(() => {
       <!-- Heatmap -->
       <div class="glass-card rounded-2xl p-4 space-y-3">
         <h2 class="text-sm text-muted uppercase tracking-wider">Daily heatmap</h2>
-        <CheatCalendar :logs="trackedLogs" :month="selectedMonth" :year="selectedYear" />
+        <CheatCalendar
+          :logs="trackedLogs"
+          :month="selectedMonth"
+          :year="selectedYear"
+          @day-selected="onDaySelected"
+        />
       </div>
 
       <!-- Danger zone insight -->
@@ -183,8 +210,14 @@ onMounted(() => {
       </div>
 
       <p class="text-center text-xs text-muted pb-2">
-        Tap chart segments or calendar days to explore
+        Tap calendar days to log a past meal
       </p>
     </template>
+
+    <PastMealModal
+      v-model:visible="showPastMealModal"
+      :initial-date="pastMealDate"
+      @logged="onPastMealLogged"
+    />
   </div>
 </template>
