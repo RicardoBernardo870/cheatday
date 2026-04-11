@@ -33,6 +33,7 @@ export interface Category {
   color: string
   sort_order: number
   is_active: boolean
+  free_pass: boolean
   created_at: string
 }
 

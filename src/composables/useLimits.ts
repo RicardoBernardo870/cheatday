@@ -1,12 +1,19 @@
 import { computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useMealsStore } from '@/stores/meals';
+import { useCategoriesStore } from '@/stores/categories';
 
 export type WarningLevel = 'green' | 'yellow' | 'orange' | 'red';
 
 export const useLimits = () => {
   const auth = useAuthStore();
   const meals = useMealsStore();
+  const categories = useCategoriesStore();
+
+  // IDs of categories that are free passes — excluded from all limit counts
+  const freePassIds = computed(
+    () => new Set(categories.categories.filter((c) => c.free_pass).map((c) => c.id))
+  );
 
   const monthlyLimit = computed(() => {
     if (!auth.profile) return 0;
@@ -23,6 +30,7 @@ export const useLimits = () => {
   const monthlyCount = computed(() => {
     const now = new Date();
     return meals.logs.filter((log) => {
+      if (freePassIds.value.has(log.category_id)) return false;
       const d = new Date(log.logged_at);
       return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
     }).length;
@@ -34,13 +42,18 @@ export const useLimits = () => {
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - day + 1);
     startOfWeek.setHours(0, 0, 0, 0);
-    return meals.logs.filter((log) => new Date(log.logged_at) >= startOfWeek).length;
+    return meals.logs.filter(
+      (log) => !freePassIds.value.has(log.category_id) && new Date(log.logged_at) >= startOfWeek
+    ).length;
   });
 
   const todayCount = computed(() => {
     const now = new Date();
-    return meals.logs.filter((log) => new Date(log.logged_at).toDateString() === now.toDateString())
-      .length;
+    return meals.logs.filter(
+      (log) =>
+        !freePassIds.value.has(log.category_id) &&
+        new Date(log.logged_at).toDateString() === now.toDateString()
+    ).length;
   });
 
   function countForCategory(categoryId: string, period: 'today' | 'week' | 'month' = 'month') {
@@ -112,6 +125,7 @@ export const useLimits = () => {
     monthlyCount,
     weeklyCount,
     todayCount,
+    freePassIds,
     countForCategory,
     monthlyWarning,
     weeklyWarning,

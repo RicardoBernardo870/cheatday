@@ -16,15 +16,21 @@ const monthName = new Date().toLocaleString('default', { month: 'long' });
 
 const isLoading = computed(() => categories.loading || meals.loading);
 
-const categoryBreakdown = computed(() => {
-  return categories.categories
-    .map((cat) => ({
-      ...cat,
-      count: limits.countForCategory(cat.id, 'month'),
-    }))
+const categoryBreakdown = computed(() =>
+  categories.categories
+    .filter((c) => !c.free_pass)
+    .map((cat) => ({ ...cat, count: limits.countForCategory(cat.id, 'month') }))
     .filter((c) => c.count > 0)
-    .sort((a, b) => b.count - a.count);
-});
+    .sort((a, b) => b.count - a.count)
+);
+
+const freePassBreakdown = computed(() =>
+  categories.categories
+    .filter((c) => c.free_pass)
+    .map((cat) => ({ ...cat, count: limits.countForCategory(cat.id, 'month') }))
+    .filter((c) => c.count > 0)
+    .sort((a, b) => b.count - a.count)
+);
 </script>
 
 <template>
@@ -49,6 +55,7 @@ const categoryBreakdown = computed(() => {
         :remaining="Math.max(0, limits.monthlyLimit.value - limits.monthlyCount.value)"
       />
 
+      <!-- Tracked categories -->
       <div class="space-y-3">
         <h2 class="text-sm text-muted uppercase tracking-wider">By category</h2>
 
@@ -69,6 +76,24 @@ const categoryBreakdown = computed(() => {
             No cheat meals logged yet — tap the Log tab to start tracking.
           </p>
         </div>
+      </div>
+
+      <!-- Free pass treats (Dessert etc.) — shown separately, don't count toward limit -->
+      <div v-if="freePassBreakdown.length > 0" class="space-y-3">
+        <div class="flex items-center gap-2">
+          <h2 class="text-sm text-muted uppercase tracking-wider">Free pass treats</h2>
+          <span class="text-xs glass-card rounded-full px-2 py-0.5 text-muted">doesn't count</span>
+        </div>
+
+        <CategoryBreakdownItem
+          v-for="cat in freePassBreakdown"
+          :key="cat.id"
+          :icon="cat.icon"
+          :name="cat.name"
+          :color="cat.color"
+          :count="cat.count"
+          :totalCount="cat.count"
+        />
       </div>
 
       <p class="text-center text-xs text-muted">Calendar heatmap & weekly trend coming soon</p>
