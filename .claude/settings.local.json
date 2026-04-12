@@ -8,7 +8,11 @@
       "Bash(npm install:*)",
       "Bash(npx vue-tsc:*)",
       "Bash(npx eslint:*)",
-      "Bash(npx vite:*)"
+      "Bash(npx vite:*)",
+      "Bash(grep -E \"\\\\.\\(vue|ts|js|json\\)$\")",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)"
     ]
   }
 }
