@@ -43,6 +43,7 @@
     "vite": "^7.3.2",
     "vite-plugin-pwa": "^1.2.0",
     "vue-eslint-parser": "^10.4.0",
+    "vue-tsc": "^3.2.6",
     "workbox-window": "^7.1.0"
   }
 }
