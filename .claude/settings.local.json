@@ -12,7 +12,8 @@
       "Bash(grep -E \"\\\\.\\(vue|ts|js|json\\)$\")",
       "Bash(git checkout:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m ':*)"
+      "Bash(git commit -m ':*)",
+      "Bash(python3 -m json.tool)"
     ]
   }
 }
