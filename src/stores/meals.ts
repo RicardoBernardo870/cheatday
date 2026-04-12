@@ -142,6 +142,17 @@ export const useMealsStore = defineStore('meals', () => {
     logs.value = logs.value.filter((l) => l.id !== lastLog.id);
   };
 
+  const deleteMeal = async (logId: string) => {
+    if (logId.startsWith('offline-')) {
+      logs.value = logs.value.filter((l) => l.id !== logId);
+      return;
+    }
+
+    const { error } = await supabase.from('meal_logs').delete().eq('id', logId);
+    if (error) throw error;
+    logs.value = logs.value.filter((l) => l.id !== logId);
+  };
+
   const syncIfOnline = async () => {
     if (navigator.onLine) {
       await syncOfflineQueue();
@@ -158,6 +169,7 @@ export const useMealsStore = defineStore('meals', () => {
     fetchAllTime,
     logMeal,
     undoLastLog,
+    deleteMeal,
     syncIfOnline,
   };
 });
