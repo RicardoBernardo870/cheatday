@@ -8,6 +8,7 @@ import { useLimits } from '@/composables/useLimits';
 import { useMonthNavigation } from '@/composables/useMonthNavigation';
 import { useStatsData } from '@/composables/useStatsData';
 import { useCheatInsights } from '@/composables/useCheatInsights';
+import { useBalanceScore } from '@/composables/useBalanceScore';
 
 import MonthNavigator from '@/components/MonthNavigator.vue';
 import StatsOverviewCards from '@/components/StatsOverviewCards.vue';
@@ -17,6 +18,7 @@ import CheatCalendar from '@/components/CheatCalendar.vue';
 import CategoryDonut from '@/components/CategoryDonut.vue';
 import WeeklyTrendBar from '@/components/WeeklyTrendBar.vue';
 import YearlyTrendBar from '@/components/YearlyTrendBar.vue';
+import BalanceHero from '@/components/BalanceHero.vue';
 import PastMealModal from '@/components/PastMealModal.vue';
 
 const meals = useMealsStore();
@@ -68,6 +70,13 @@ const { dangerZone, burnRateForecast } = useCheatInsights(
   allTimeTrackedLogs
 );
 
+const { balanceScore, scoreLevel, scoreLabel, cleanDays, totalDays } = useBalanceScore(
+  trackedLogs,
+  isCurrentMonth,
+  selectedYear,
+  selectedMonth
+);
+
 // ── Yearly chart ────────────────────────────────────────────────────────────
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -112,6 +121,15 @@ onMounted(() => {
     </template>
 
     <template v-else>
+      <!-- Balance Score hero -->
+      <BalanceHero
+        :score="balanceScore"
+        :level="scoreLevel"
+        :label="scoreLabel"
+        :clean-days="cleanDays"
+        :total-days="totalDays"
+      />
+
       <!-- Overview cards -->
       <StatsOverviewCards
         :logged="trackedCount"
