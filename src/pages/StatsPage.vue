@@ -20,6 +20,8 @@ import WeeklyTrendBar from '@/components/WeeklyTrendBar.vue';
 import YearlyTrendBar from '@/components/YearlyTrendBar.vue';
 import BalanceHero from '@/components/BalanceHero.vue';
 import PastMealModal from '@/components/PastMealModal.vue';
+import ActionMenu from '@/components/ActionMenu.vue';
+import ManageMealsModal from '@/components/ManageMealsModal.vue';
 
 const meals = useMealsStore();
 const categories = useCategoriesStore();
@@ -40,9 +42,13 @@ const {
   resetToCurrentMonth,
 } = useMonthNavigation();
 
-// ── Past meal modal ────────────────────────────────────────────────────────
+// ── Day selection & action menu ────────────────────────────────────────────
+const showActionMenu = ref(false);
 const showPastMealModal = ref(false);
+const showManageMealsModal = ref(false);
 const pastMealDate = ref<Date>();
+const selectedDateLabel = ref('');
+const selectedDateHasMeals = ref(false);
 
 const onDaySelected = (date: Date | null) => {
   if (!date) return;
@@ -51,13 +57,55 @@ const onDaySelected = (date: Date | null) => {
   const selected = new Date(date);
   selected.setHours(0, 0, 0, 0);
   if (selected > today) return;
+
   pastMealDate.value = date;
+  selectedDateLabel.value = date.toLocaleDateString('default', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
+
+  // Check if selected day has meals
+  const dayMealCount = displayLogs.value.filter((log) => {
+    const ld = new Date(log.logged_at);
+    return (
+      ld.getDate() === date.getDate() &&
+      ld.getMonth() === date.getMonth() &&
+      ld.getFullYear() === date.getFullYear()
+    );
+  }).length;
+
+  selectedDateHasMeals.value = dayMealCount > 0;
+
+  if (dayMealCount === 0) {
+    // No meals → go straight to Add
+    showPastMealModal.value = true;
+  } else {
+    // Has meals → show action menu
+    showActionMenu.value = true;
+  }
+};
+
+const onActionAdd = () => {
   showPastMealModal.value = true;
 };
 
-const onPastMealLogged = async (date: Date) => {
-  stats.invalidate(date.getFullYear());
+const onActionManage = () => {
+  showManageMealsModal.value = true;
+};
+
+const refreshStats = async () => {
+  const year = pastMealDate.value?.getFullYear() ?? selectedYear.value;
+  stats.invalidate(year);
   await Promise.all([loadMonth(), stats.fetchYearly(selectedYear.value), stats.fetchAllTime()]);
+};
+
+const onPastMealLogged = async (_date: Date) => {
+  await refreshStats();
+};
+
+const onMealDeleted = async () => {
+  await refreshStats();
 };
 
 const { trackedLogs, trackedCount, categoryDonutData, freePassData, weeklyBarData } =
@@ -228,14 +276,32 @@ onMounted(() => {
       </div>
 
       <p class="text-center text-xs text-muted pb-2">
-        Tap calendar days to log a past meal
+        Tap a calendar day to add or manage meals
       </p>
     </template>
 
+    <!-- Action menu (router between Add and Manage) -->
+    <ActionMenu
+      v-model:visible="showActionMenu"
+      :date-label="selectedDateLabel"
+      :has-meals="selectedDateHasMeals"
+      @add="onActionAdd"
+      @manage="onActionManage"
+    />
+
+    <!-- Add meal modal -->
     <PastMealModal
       v-model:visible="showPastMealModal"
       :initial-date="pastMealDate"
       @logged="onPastMealLogged"
+    />
+
+    <!-- Manage meals modal (view & delete) -->
+    <ManageMealsModal
+      v-model:visible="showManageMealsModal"
+      :date="pastMealDate"
+      :logs="displayLogs"
+      @deleted="onMealDeleted"
     />
   </div>
 </template>
