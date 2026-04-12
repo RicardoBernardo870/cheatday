@@ -10,9 +10,10 @@ export const useCheatInsights = (
   allTimeTrackedLogs: Ref<MealLog[]>
 ) => {
   const dangerZone = computed(() => {
-    if (trackedLogs.value.length < 3) return null;
+    const logs = allTimeTrackedLogs.value;
+    if (logs.length < 3) return null;
     const dayCounts = Array(7).fill(0) as number[];
-    for (const log of trackedLogs.value) {
+    for (const log of logs) {
       dayCounts[new Date(log.logged_at).getDay()]++;
     }
     const max = Math.max(...dayCounts);

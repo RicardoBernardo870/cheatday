@@ -46,7 +46,7 @@ onUnmounted(() => {
           <button
             v-if="(message as any).data?.canUndo !== false"
             @click="() => { meals.undoLastLog((message as any).data.categoryId); toast.remove(message) }"
-            class="text-xs underline shrink-0 opacity-80 hover:opacity-100 transition-opacity"
+            class="text-sm font-semibold px-3 py-1.5 rounded-lg bg-white/15 shrink-0 hover:bg-white/25 active:scale-95 transition-all"
           >
             Undo
           </button>

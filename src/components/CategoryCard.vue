@@ -11,14 +11,12 @@ defineProps<{
 
 const emit = defineEmits<{
   tap: [id: string];
-  longpress: [id: string];
 }>();
 </script>
 
 <template>
   <Button
     @click="emit('tap', id)"
-    @contextmenu.prevent="emit('longpress', id)"
     :pt="{
       root: {
         class:

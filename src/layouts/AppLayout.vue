@@ -6,7 +6,7 @@ const route = useRoute();
 
 <template>
   <div class="flex flex-col min-h-screen">
-    <main class="flex-1 overflow-y-auto pt-safe pb-[calc(5rem+env(safe-area-inset-bottom))]">
+    <main class="flex-1 overflow-y-auto pt-safe pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
       <RouterView v-slot="{ Component }">
         <Transition name="fade" mode="out-in">
           <component :is="Component" :key="route.name" />
@@ -14,8 +14,8 @@ const route = useRoute();
       </RouterView>
     </main>
 
-    <nav class="pb-safe">
-      <div class="glass-card fixed bottom-0 w-full flex justify-around items-center h-20 pb-safe">
+    <nav>
+      <div class="glass-card fixed bottom-0 inset-x-0 flex justify-around items-center pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
         <RouterLink
           to="/"
           :class="[

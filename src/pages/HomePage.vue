@@ -39,17 +39,13 @@ const handleTap = async (categoryId: string) => {
     severity: 'success',
     summary: `${cat?.icon ?? ''} ${cat?.name ?? 'Meal'} logged`,
     closable: false,
-    life: 5000,
+    life: 6000,
     group: 'meal',
     data: { categoryId },
   };
   toast.add(message);
 };
 
-const handleLongPress = async (categoryId: string) => {
-  if ('vibrate' in navigator) navigator.vibrate([10, 50, 10]);
-  await meals.undoLastLog(categoryId);
-};
 </script>
 
 <template>
@@ -73,7 +69,6 @@ const handleLongPress = async (categoryId: string) => {
         :color="cat.color"
         :count="limits.countForCategory(cat.id, 'month')"
         @tap="handleTap"
-        @longpress="handleLongPress"
       />
     </div>
 
@@ -86,7 +81,7 @@ const handleLongPress = async (categoryId: string) => {
       </p>
     </div>
 
-    <p class="text-center text-xs pt-2 text-muted">Tap to log · Long press to undo</p>
+    <p class="text-center text-xs pt-2 text-muted">Tap to log · Undo via notification</p>
 
     <Button
       @click="showPastMealModal = true"
