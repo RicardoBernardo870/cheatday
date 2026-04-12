@@ -217,7 +217,7 @@ onMounted(() => {
         v-if="dangerZone"
         icon="🔥"
         :title="`${dangerZone.day} is your danger zone`"
-        :subtitle="`${dangerZone.count} meals logged on that day this month`"
+        :subtitle="`${dangerZone.count} cheat meals logged on ${dangerZone.day}s all time`"
       />
 
       <!-- Category donut -->
