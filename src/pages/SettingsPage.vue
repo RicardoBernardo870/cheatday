@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { Button } from 'primevue';
+
+import ThemeToggle from '@/components/ThemeToggle.vue';
+import LimitsForm from '@/components/LimitsForm.vue';
 
 const auth = useAuthStore();
 
@@ -19,7 +23,7 @@ watch(
   }
 );
 
-async function saveSettings() {
+const saveSettings = async () => {
   saving.value = true;
   try {
     await auth.updateProfile({
@@ -31,71 +35,43 @@ async function saveSettings() {
   } finally {
     saving.value = false;
   }
-}
+};
 </script>
 
 <template>
   <div class="px-4 py-6 space-y-8 max-w-sm mx-auto">
     <h1 class="text-xl font-bold">Settings</h1>
 
-    <div class="bg-card rounded-2xl p-5 border border-border space-y-1">
-      <p class="text-sm text-muted">Signed in as</p>
-      <p class="font-medium truncate">{{ auth.user?.email }}</p>
+    <div class="glass-card rounded-2xl p-5 space-y-1">
+      <p class="text-sm" style="color: var(--color-text-muted)">Signed in as</p>
+      <p class="font-medium truncate" style="color: var(--color-text)">{{ auth.user?.email }}</p>
     </div>
 
+    <ThemeToggle />
+
     <div class="space-y-6">
-      <h2 class="text-sm text-muted uppercase tracking-wider">Your limits</h2>
+      <h2 class="text-sm uppercase tracking-wider" style="color: var(--color-text-muted)">
+        Your limits
+      </h2>
 
-      <div class="space-y-3">
-        <div class="flex justify-between items-center">
-          <label class="font-medium">Cheat meal allowance</label>
-          <span class="text-primary font-bold text-xl">{{ cheatPercentage }}%</span>
-        </div>
-        <input
-          v-model="cheatPercentage"
-          type="range"
-          min="5"
-          max="40"
-          step="5"
-          class="w-full accent-primary"
-        />
-      </div>
+      <LimitsForm v-model:cheatPercentage="cheatPercentage" v-model:mealsPerDay="mealsPerDay" />
 
-      <div class="space-y-3">
-        <label class="font-medium">Meals per day</label>
-        <div class="flex gap-3">
-          <button
-            v-for="n in [2, 3, 4, 5]"
-            :key="n"
-            @click="mealsPerDay = n"
-            :class="[
-              'flex-1 rounded-xl py-2 text-sm font-medium border transition-colors',
-              mealsPerDay === n
-                ? 'bg-primary border-primary text-white'
-                : 'bg-[#0f0f0f] border-border text-muted',
-            ]"
-          >
-            {{ n }}
-          </button>
-        </div>
-      </div>
-
-      <button
-        @click="saveSettings"
-        :disabled="saving"
-        class="w-full bg-primary text-white font-semibold rounded-xl py-3 transition-opacity disabled:opacity-50"
-      >
+      <Button @click="saveSettings" :disabled="saving" class="w-full">
         {{ saving ? 'Saving...' : saved ? 'Saved ✓' : 'Save changes' }}
-      </button>
+      </Button>
     </div>
 
     <div class="pt-4">
-      <button
+      <Button
         @click="auth.signOut"
-        class="w-full border border-border text-muted rounded-xl py-3 text-sm"
-      >
-        Sign out
-      </button>
+        label="Sign out"
+        :pt="{
+          root: {
+            class: 'w-full glass rounded-xl py-3 text-sm text-[color:var(--color-text)] justify-center',
+          },
+        }"
+        :ptOptions="{ mergeSections: false, mergeProps: false }"
+      />
     </div>
   </div>
 </template>

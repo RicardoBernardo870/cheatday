@@ -1,99 +1,100 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
+import type { ToastMessageOptions } from 'primevue/toast';
 import { useCategoriesStore } from '@/stores/categories';
 import { useMealsStore } from '@/stores/meals';
+import { useStatsStore } from '@/stores/stats';
 import { useLimits } from '@/composables/useLimits';
+
+import CheatMealProgressBar from '@/components/CheatMealProgressBar.vue';
+import WeatherCard from '@/components/WeatherCard.vue';
+import CategoryCard from '@/components/CategoryCard.vue';
+import SkeletonCard from '@/components/SkeletonCard.vue';
+import PastMealModal from '@/components/PastMealModal.vue';
+import { Button } from 'primevue';
 
 const categories = useCategoriesStore();
 const meals = useMealsStore();
+const stats = useStatsStore();
 const limits = useLimits();
+const toast = useToast();
+
+const showPastMealModal = ref(false);
+
+const onPastMealLogged = (date: Date) => {
+  stats.invalidate(date.getFullYear());
+  stats.fetchAllTime();
+};
 
 onMounted(async () => {
   await Promise.all([categories.fetch(), meals.fetchCurrentMonth()]);
 });
 
-async function handleTap(categoryId: string) {
+const handleTap = async (categoryId: string) => {
+  if ('vibrate' in navigator) navigator.vibrate(10);
   await meals.logMeal(categoryId);
-}
+  const cat = categories.categories.find((c) => c.id === categoryId);
+  const message: ToastMessageOptions & { data: { categoryId: string } } = {
+    severity: 'success',
+    summary: `${cat?.icon ?? ''} ${cat?.name ?? 'Meal'} logged`,
+    closable: false,
+    life: 5000,
+    group: 'meal',
+    data: { categoryId },
+  };
+  toast.add(message);
+};
 
-async function handleLongPress(categoryId: string) {
+const handleLongPress = async (categoryId: string) => {
+  if ('vibrate' in navigator) navigator.vibrate([10, 50, 10]);
   await meals.undoLastLog(categoryId);
-}
-
-const warningColors: Record<string, string> = {
-  green: 'text-green-400',
-  yellow: 'text-yellow-400',
-  orange: 'text-orange-400',
-  red: 'text-red-400',
 };
 </script>
 
 <template>
   <div class="px-4 py-6 space-y-6">
-    <div class="space-y-1">
-      <div class="flex justify-between text-sm">
-        <span class="text-muted">This month</span>
-        <span :class="warningColors[limits.monthlyWarning.value]" class="font-semibold">
-          {{ limits.monthlyCount.value }} / {{ limits.monthlyLimit.value }}
-        </span>
-      </div>
-      <div class="h-2 bg-card rounded-full overflow-hidden">
-        <div
-          class="h-full rounded-full transition-all duration-300"
-          :class="{
-            'bg-green-400': limits.monthlyWarning.value === 'green',
-            'bg-yellow-400': limits.monthlyWarning.value === 'yellow',
-            'bg-orange-400': limits.monthlyWarning.value === 'orange',
-            'bg-red-400': limits.monthlyWarning.value === 'red',
-          }"
-          :style="{ width: `${limits.monthlyProgress.value * 100}%` }"
-        />
-      </div>
-      <div class="flex justify-between text-xs text-muted">
-        <span>Week: {{ limits.weeklyCount.value }}/{{ limits.weeklyLimit.value }}</span>
-        <span>Today: {{ limits.todayCount.value }}/{{ limits.dailySoftLimit.value }}</span>
-      </div>
+    <CheatMealProgressBar />
+    <WeatherCard />
+
+    <!-- Loading skeleton -->
+    <div v-if="categories.loading" class="grid grid-cols-2 gap-3">
+      <SkeletonCard v-for="n in 4" :key="n" class="h-32" />
     </div>
 
-    <div
-      v-if="limits.warningMessage.value"
-      :class="{
-        'bg-yellow-400/10 border-yellow-400/30 text-yellow-400':
-          limits.activeWarning.value === 'yellow',
-        'bg-orange-400/10 border-orange-400/30 text-orange-400':
-          limits.activeWarning.value === 'orange',
-        'bg-red-400/10 border-red-400/30 text-red-400': limits.activeWarning.value === 'red',
-      }"
-      class="border rounded-xl px-4 py-3 text-sm"
-    >
-      {{ limits.warningMessage.value }}
-    </div>
-
-    <div class="grid grid-cols-2 gap-3">
-      <button
+    <!-- Category grid -->
+    <div v-else-if="categories.categories.length > 0" class="grid grid-cols-2 gap-3">
+      <CategoryCard
         v-for="cat in categories.categories"
         :key="cat.id"
-        @click="handleTap(cat.id)"
-        @contextmenu.prevent="handleLongPress(cat.id)"
-        class="bg-card rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-95 transition-transform border border-border"
-      >
-        <span class="text-4xl">{{ cat.icon }}</span>
-        <span class="text-sm font-medium">{{ cat.name }}</span>
-        <span class="text-2xl font-bold" :style="{ color: cat.color }">
-          {{ limits.countForCategory(cat.id, 'month') }}
-        </span>
-        <span class="text-xs text-muted">this month</span>
-      </button>
+        :id="cat.id"
+        :icon="cat.icon"
+        :name="cat.name"
+        :color="cat.color"
+        :count="limits.countForCategory(cat.id, 'month')"
+        @tap="handleTap"
+        @longpress="handleLongPress"
+      />
     </div>
 
-    <div
-      v-if="categories.categories.length === 0 && !categories.loading"
-      class="text-center py-10 text-muted"
+    <!-- Empty state -->
+    <div v-else class="text-center py-16 space-y-3">
+      <div class="text-6xl">🍽️</div>
+      <h2 class="font-semibold text-lg">No categories yet</h2>
+      <p class="text-sm text-muted max-w-xs mx-auto">
+        Your cheat meal categories will appear here once set up.
+      </p>
+    </div>
+
+    <p class="text-center text-xs pt-2 text-muted">Tap to log · Long press to undo</p>
+
+    <Button
+      @click="showPastMealModal = true"
+      class="mx-auto pt-1"
     >
-      <div class="text-4xl mb-2">🍽️</div>
-      <p>No categories yet</p>
-    </div>
+      Missed a meal? Log for a past date
+    </Button>
 
-    <p class="text-center text-xs text-muted pt-2">Tap to log · Long press to undo</p>
+    <PastMealModal v-model:visible="showPastMealModal" @logged="onPastMealLogged" />
   </div>
 </template>

@@ -4,6 +4,9 @@ import { supabase, type Profile } from '@/lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 import router from '@/router';
 
+/** Avoid stacking Supabase auth listeners when App remounts (e.g. Vite HMR). */
+let authStateSubscription: { unsubscribe: () => void } | null = null;
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
   const session = ref<Session | null>(null);
@@ -23,15 +26,18 @@ export const useAuthStore = defineStore('auth', () => {
 
     if (user.value) await fetchProfile();
 
-    supabase.auth.onAuthStateChange(async (_, s) => {
-      session.value = s;
-      user.value = s?.user ?? null;
-      if (user.value) {
-        await fetchProfile();
-      } else {
-        profile.value = null;
-      }
-    });
+    if (!authStateSubscription) {
+      const { data } = supabase.auth.onAuthStateChange(async (_, s) => {
+        session.value = s;
+        user.value = s?.user ?? null;
+        if (user.value) {
+          await fetchProfile();
+        } else {
+          profile.value = null;
+        }
+      });
+      authStateSubscription = data.subscription;
+    }
 
     loading.value = false;
   };

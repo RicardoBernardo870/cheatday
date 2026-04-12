@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__62715eb5-0c85-4366-afb7-37c049b51f14__get_issue",
+      "mcp__4c7c02b6-653b-457c-b08b-d3a1461ae2c2__list_projects",
+      "mcp__4c7c02b6-653b-457c-b08b-d3a1461ae2c2__execute_sql",
+      "mcp__4c7c02b6-653b-457c-b08b-d3a1461ae2c2__apply_migration",
+      "Bash(npm install:*)",
+      "Bash(npx vue-tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx vite:*)",
+      "Bash(grep -E \"\\\\.\\(vue|ts|js|json\\)$\")",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)"
+    ]
+  }
+}

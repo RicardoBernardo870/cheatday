@@ -1,80 +1,314 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useMealsStore } from '@/stores/meals';
 import { useCategoriesStore } from '@/stores/categories';
+import { useStatsStore } from '@/stores/stats';
 import { useLimits } from '@/composables/useLimits';
+import { useMonthNavigation } from '@/composables/useMonthNavigation';
+import { useStatsData } from '@/composables/useStatsData';
+import { useCheatInsights } from '@/composables/useCheatInsights';
+import { useBalanceScore } from '@/composables/useBalanceScore';
+import { useMomComparison } from '@/composables/useMomComparison';
+
+import MonthNavigator from '@/components/MonthNavigator.vue';
+import StatsOverviewCards from '@/components/StatsOverviewCards.vue';
+import InsightCard from '@/components/InsightCard.vue';
+import SkeletonCard from '@/components/SkeletonCard.vue';
+import CheatCalendar from '@/components/CheatCalendar.vue';
+import CategoryDonut from '@/components/CategoryDonut.vue';
+import WeeklyTrendBar from '@/components/WeeklyTrendBar.vue';
+import YearlyTrendBar from '@/components/YearlyTrendBar.vue';
+import BalanceHero from '@/components/BalanceHero.vue';
+import MomTrend from '@/components/MomTrend.vue';
+import PastMealModal from '@/components/PastMealModal.vue';
+import ActionMenu from '@/components/ActionMenu.vue';
+import ManageMealsModal from '@/components/ManageMealsModal.vue';
 
 const meals = useMealsStore();
 const categories = useCategoriesStore();
+const stats = useStatsStore();
+const { allTimeTrackedLogs } = storeToRefs(stats);
 const limits = useLimits();
 
-const monthName = new Date().toLocaleString('default', { month: 'long' });
+const {
+  selectedMonth,
+  selectedYear,
+  displayLogs,
+  statsLoading,
+  isCurrentMonth,
+  monthLabel,
+  loadMonth,
+  prevMonth,
+  nextMonth,
+  resetToCurrentMonth,
+} = useMonthNavigation();
 
-const categoryBreakdown = computed(() => {
-  return categories.categories
-    .map((cat) => ({
-      ...cat,
-      count: limits.countForCategory(cat.id, 'month'),
-    }))
-    .filter((c) => c.count > 0)
-    .sort((a, b) => b.count - a.count);
+// ── Day selection & action menu ────────────────────────────────────────────
+const showActionMenu = ref(false);
+const showPastMealModal = ref(false);
+const showManageMealsModal = ref(false);
+const pastMealDate = ref<Date>();
+const selectedDateLabel = ref('');
+const selectedDateHasMeals = ref(false);
+
+const onDaySelected = (date: Date | null) => {
+  if (!date) return;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selected = new Date(date);
+  selected.setHours(0, 0, 0, 0);
+  if (selected > today) return;
+
+  pastMealDate.value = date;
+  selectedDateLabel.value = date.toLocaleDateString('default', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
+
+  // Check if selected day has meals
+  const dayMealCount = displayLogs.value.filter((log) => {
+    const ld = new Date(log.logged_at);
+    return (
+      ld.getDate() === date.getDate() &&
+      ld.getMonth() === date.getMonth() &&
+      ld.getFullYear() === date.getFullYear()
+    );
+  }).length;
+
+  selectedDateHasMeals.value = dayMealCount > 0;
+
+  if (dayMealCount === 0) {
+    // No meals → go straight to Add
+    showPastMealModal.value = true;
+  } else {
+    // Has meals → show action menu
+    showActionMenu.value = true;
+  }
+};
+
+const onActionAdd = () => {
+  showPastMealModal.value = true;
+};
+
+const onActionManage = () => {
+  showManageMealsModal.value = true;
+};
+
+const refreshStats = async () => {
+  const year = pastMealDate.value?.getFullYear() ?? selectedYear.value;
+  stats.invalidate(year);
+  await Promise.all([loadMonth(), stats.fetchYearly(selectedYear.value), stats.fetchAllTime()]);
+};
+
+const onPastMealLogged = async (_date: Date) => {
+  await refreshStats();
+};
+
+const onMealDeleted = async () => {
+  await refreshStats();
+};
+
+const { trackedLogs, trackedCount, categoryDonutData, freePassData, weeklyBarData } =
+  useStatsData(displayLogs, selectedYear, selectedMonth);
+
+const { dangerZone, burnRateForecast } = useCheatInsights(
+  trackedLogs,
+  isCurrentMonth,
+  limits.monthlyLimit,
+  allTimeTrackedLogs
+);
+
+const { balanceScore, scoreLevel, scoreLabel, cleanDays, totalDays } = useBalanceScore(
+  trackedLogs,
+  isCurrentMonth,
+  selectedYear,
+  selectedMonth
+);
+
+const { mom, loading: momLoading } = useMomComparison(trackedLogs, selectedYear, selectedMonth);
+
+// ── Yearly chart ────────────────────────────────────────────────────────────
+const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const yearlyCounts = computed(() => stats.getYearlyCounts(selectedYear.value));
+
+const currentMonthIndex = computed(() => {
+  const now = new Date();
+  return selectedYear.value === now.getFullYear() ? now.getMonth() : undefined;
+});
+
+// Reload yearly data when the selected year changes
+watch(selectedYear, (year) => stats.fetchYearly(year), { immediate: true });
+
+const isLoading = computed(() => categories.loading || meals.loading || statsLoading.value);
+
+onMounted(() => {
+  Promise.all([
+    meals.fetchCurrentMonth(),
+    stats.fetchAllTime(),
+  ]);
 });
 </script>
 
 <template>
   <div class="px-4 py-6 space-y-6">
-    <h1 class="text-xl font-bold">{{ monthName }}</h1>
+    <!-- Month navigation -->
+    <MonthNavigator
+      :month-label="monthLabel"
+      :is-current-month="isCurrentMonth"
+      @prev="prevMonth"
+      @next="nextMonth"
+      @reset="resetToCurrentMonth"
+    />
 
-    <div class="grid grid-cols-3 gap-3">
-      <div class="bg-card rounded-2xl p-4 text-center border border-border">
-        <p class="text-2xl font-bold text-primary">
-          {{ limits.monthlyCount.value }}
-        </p>
-        <p class="text-xs text-muted mt-1">logged</p>
+    <!-- Loading skeleton -->
+    <template v-if="isLoading">
+      <div class="grid grid-cols-3 gap-3">
+        <SkeletonCard v-for="n in 3" :key="n" class="h-20" />
       </div>
-      <div class="bg-card rounded-2xl p-4 text-center border border-border">
-        <p class="text-2xl font-bold">{{ limits.monthlyLimit.value }}</p>
-        <p class="text-xs text-muted mt-1">limit</p>
-      </div>
-      <div class="bg-card rounded-2xl p-4 text-center border border-border">
-        <p class="text-2xl font-bold text-green-400">
-          {{ Math.max(0, limits.monthlyLimit.value - limits.monthlyCount.value) }}
-        </p>
-        <p class="text-xs text-muted mt-1">remaining</p>
-      </div>
-    </div>
+      <SkeletonCard class="h-52" />
+      <SkeletonCard class="h-40" />
+    </template>
 
-    <div class="space-y-3">
-      <h2 class="text-sm text-muted uppercase tracking-wider">By category</h2>
-      <div
-        v-for="cat in categoryBreakdown"
-        :key="cat.id"
-        class="bg-card rounded-xl px-4 py-3 flex items-center gap-3 border border-border"
-      >
-        <span class="text-2xl">{{ cat.icon }}</span>
-        <div class="flex-1">
-          <div class="flex justify-between mb-1">
-            <span class="text-sm font-medium">{{ cat.name }}</span>
-            <span class="text-sm font-bold" :style="{ color: cat.color }">{{ cat.count }}</span>
-          </div>
-          <div class="h-1.5 bg-[#333] rounded-full overflow-hidden">
-            <div
-              class="h-full rounded-full"
-              :style="{
-                width: `${Math.min(100, (cat.count / Math.max(1, limits.monthlyCount.value)) * 100)}%`,
-                backgroundColor: cat.color,
-              }"
-            />
+    <template v-else>
+      <!-- Balance Score hero -->
+      <BalanceHero
+        :score="balanceScore"
+        :level="scoreLevel"
+        :label="scoreLabel"
+        :clean-days="cleanDays"
+        :total-days="totalDays"
+      />
+
+      <!-- Month-over-month trend -->
+      <MomTrend :mom="mom" :loading="momLoading" />
+
+      <!-- Overview cards -->
+      <StatsOverviewCards
+        :logged="trackedCount"
+        :limit="limits.monthlyLimit.value"
+        :remaining="Math.max(0, limits.monthlyLimit.value - trackedCount)"
+      />
+
+      <!-- Burn rate forecast -->
+      <InsightCard
+        v-if="burnRateForecast"
+        :icon="burnRateForecast.isOverLimit ? '⚠️' : '📈'"
+        :title="burnRateForecast.isOverLimit ? 'On track to exceed limit' : 'Pace looks good'"
+        :subtitle="`At ${burnRateForecast.rate} meals/week you'll hit ~${burnRateForecast.projected} this month (limit ${burnRateForecast.limit})`"
+        :variant="burnRateForecast.isOverLimit ? 'warning' : 'default'"
+      />
+
+      <!-- Heatmap -->
+      <div class="glass-card rounded-2xl p-4 space-y-3">
+        <h2 class="text-sm text-muted uppercase tracking-wider">Daily heatmap</h2>
+        <CheatCalendar
+          :logs="trackedLogs"
+          :month="selectedMonth"
+          :year="selectedYear"
+          @day-selected="onDaySelected"
+        />
+      </div>
+
+      <!-- Danger zone insight -->
+      <InsightCard
+        v-if="dangerZone"
+        icon="🔥"
+        :title="`${dangerZone.day} is your danger zone`"
+        :subtitle="`${dangerZone.count} meals logged on that day this month`"
+      />
+
+      <!-- Category donut -->
+      <div class="glass-card rounded-2xl p-4 space-y-3">
+        <h2 class="text-sm text-muted uppercase tracking-wider">By category</h2>
+        <CategoryDonut :data="categoryDonutData" />
+      </div>
+
+      <!-- Weekly trend bar -->
+      <div class="glass-card rounded-2xl p-4 space-y-3">
+        <h2 class="text-sm text-muted uppercase tracking-wider">Weekly trend</h2>
+        <WeeklyTrendBar
+          :labels="weeklyBarData.labels"
+          :counts="weeklyBarData.counts"
+          :weekly-limit="limits.weeklyLimit.value"
+        />
+      </div>
+
+      <!-- Yearly trend bar -->
+      <div class="glass-card rounded-2xl p-4 space-y-3">
+        <h2 class="text-sm text-muted uppercase tracking-wider">
+          {{ selectedYear }} overview
+        </h2>
+        <template v-if="stats.yearlyLoading">
+          <SkeletonCard class="h-44" />
+        </template>
+        <YearlyTrendBar
+          v-else
+          :labels="MONTH_LABELS"
+          :counts="yearlyCounts"
+          :monthly-limit="limits.monthlyLimit.value"
+          :current-month-index="currentMonthIndex"
+        />
+      </div>
+
+      <!-- Free pass treats -->
+      <div v-if="freePassData.length > 0" class="space-y-3">
+        <div class="flex items-center gap-2">
+          <h2 class="text-sm text-muted uppercase tracking-wider">Free pass treats</h2>
+          <span class="text-xs glass-card rounded-full px-2 py-0.5 text-muted">doesn't count</span>
+        </div>
+        <div class="glass-card rounded-2xl p-4 space-y-3">
+          <div
+            v-for="cat in freePassData"
+            :key="cat.name"
+            class="flex items-center gap-3 text-sm"
+          >
+            <span class="text-xl">{{ cat.icon }}</span>
+            <span class="flex-1 font-medium">{{ cat.name }}</span>
+            <span class="font-bold" :style="{ color: cat.color }">{{ cat.count }}</span>
           </div>
         </div>
       </div>
 
-      <div v-if="categoryBreakdown.length === 0" class="text-center py-8 text-muted">
-        <p class="text-4xl mb-2">✨</p>
-        <p class="text-sm">No cheat meals logged yet this month</p>
+      <!-- Empty state -->
+      <div
+        v-if="trackedCount === 0 && freePassData.length === 0"
+        class="text-center py-8 space-y-3"
+      >
+        <p class="text-5xl">✨</p>
+        <h2 class="font-semibold">Clean slate</h2>
+        <p class="text-sm text-muted">No cheat meals logged for {{ monthLabel }}.</p>
       </div>
-    </div>
 
-    <p class="text-center text-xs text-muted">Calendar heatmap & weekly trend coming soon</p>
+      <p class="text-center text-xs text-muted pb-2">
+        Tap a calendar day to add or manage meals
+      </p>
+    </template>
+
+    <!-- Action menu (router between Add and Manage) -->
+    <ActionMenu
+      v-model:visible="showActionMenu"
+      :date-label="selectedDateLabel"
+      :has-meals="selectedDateHasMeals"
+      @add="onActionAdd"
+      @manage="onActionManage"
+    />
+
+    <!-- Add meal modal -->
+    <PastMealModal
+      v-model:visible="showPastMealModal"
+      :initial-date="pastMealDate"
+      @logged="onPastMealLogged"
+    />
+
+    <!-- Manage meals modal (view & delete) -->
+    <ManageMealsModal
+      v-model:visible="showManageMealsModal"
+      :date="pastMealDate"
+      :logs="displayLogs"
+      @deleted="onMealDeleted"
+    />
   </div>
 </template>
