@@ -13,7 +13,11 @@
       "Bash(git checkout:*)",
       "Bash(git add:*)",
       "Bash(git commit -m ':*)",
-      "Bash(python3 -m json.tool)"
+      "Bash(python3 -m json.tool)",
+      "Bash(node -e ':*)",
+      "Bash(ls \"C:\\\\Users\\\\ricar_nf02dr4\\\\Desktop\\\\CheatDay\\\\dist\\\\favicon\"*)",
+      "Bash(ls \"C:\\\\Users\\\\ricar_nf02dr4\\\\Desktop\\\\CheatDay\\\\dist/\"*.ico \"C:\\\\Users\\\\ricar_nf02dr4\\\\Desktop\\\\CheatDay\\\\dist/\"*.png)",
+      "Bash(npm uninstall:*)"
     ]
   }
 }
