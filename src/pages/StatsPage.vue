@@ -9,6 +9,7 @@ import { useMonthNavigation } from '@/composables/useMonthNavigation';
 import { useStatsData } from '@/composables/useStatsData';
 import { useCheatInsights } from '@/composables/useCheatInsights';
 import { useBalanceScore } from '@/composables/useBalanceScore';
+import { useMomComparison } from '@/composables/useMomComparison';
 
 import MonthNavigator from '@/components/MonthNavigator.vue';
 import StatsOverviewCards from '@/components/StatsOverviewCards.vue';
@@ -19,6 +20,7 @@ import CategoryDonut from '@/components/CategoryDonut.vue';
 import WeeklyTrendBar from '@/components/WeeklyTrendBar.vue';
 import YearlyTrendBar from '@/components/YearlyTrendBar.vue';
 import BalanceHero from '@/components/BalanceHero.vue';
+import MomTrend from '@/components/MomTrend.vue';
 import PastMealModal from '@/components/PastMealModal.vue';
 import ActionMenu from '@/components/ActionMenu.vue';
 import ManageMealsModal from '@/components/ManageMealsModal.vue';
@@ -125,6 +127,8 @@ const { balanceScore, scoreLevel, scoreLabel, cleanDays, totalDays } = useBalanc
   selectedMonth
 );
 
+const { mom, loading: momLoading } = useMomComparison(trackedLogs, selectedYear, selectedMonth);
+
 // ── Yearly chart ────────────────────────────────────────────────────────────
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -177,6 +181,9 @@ onMounted(() => {
         :clean-days="cleanDays"
         :total-days="totalDays"
       />
+
+      <!-- Month-over-month trend -->
+      <MomTrend :mom="mom" :loading="momLoading" />
 
       <!-- Overview cards -->
       <StatsOverviewCards

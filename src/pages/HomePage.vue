@@ -8,6 +8,7 @@ import { useStatsStore } from '@/stores/stats';
 import { useLimits } from '@/composables/useLimits';
 
 import CheatMealProgressBar from '@/components/CheatMealProgressBar.vue';
+import WeatherCard from '@/components/WeatherCard.vue';
 import CategoryCard from '@/components/CategoryCard.vue';
 import SkeletonCard from '@/components/SkeletonCard.vue';
 import PastMealModal from '@/components/PastMealModal.vue';
@@ -54,6 +55,7 @@ const handleLongPress = async (categoryId: string) => {
 <template>
   <div class="px-4 py-6 space-y-6">
     <CheatMealProgressBar />
+    <WeatherCard />
 
     <!-- Loading skeleton -->
     <div v-if="categories.loading" class="grid grid-cols-2 gap-3">
