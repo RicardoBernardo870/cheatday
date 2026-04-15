@@ -44,7 +44,9 @@
       "mcp__62715eb5-0c85-4366-afb7-37c049b51f14__get_team",
       "mcp__62715eb5-0c85-4366-afb7-37c049b51f14__get_user",
       "mcp__62715eb5-0c85-4366-afb7-37c049b51f14__save_issue",
-      "mcp__62715eb5-0c85-4366-afb7-37c049b51f14__save_comment"
+      "mcp__62715eb5-0c85-4366-afb7-37c049b51f14__save_comment",
+      "Bash(where gh:*)",
+      "Bash(powershell.exe -Command \"Get-Command gh -ErrorAction SilentlyContinue | Select-Object Source\")"
     ]
   }
 }

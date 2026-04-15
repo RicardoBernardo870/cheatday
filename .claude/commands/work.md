@@ -97,10 +97,20 @@ git push -u origin <gitBranchName>
 
 Never `--force` on a branch that already has remote history unless the user asks explicitly.
 
-### 8. Open the PR (target dev)
+### 8. Surface the PR URL (target dev)
 
-```bash
-gh pr create --base dev --title "<CHE-ID>: <short summary>" --body "$(cat <<'EOF'
+`gh` CLI is **not installed** on this machine. After pushing, the remote returns a pre-filled PR URL of the form:
+
+```
+https://github.com/RicardoBernardo870/cheatday/pull/new/<branch>
+```
+
+Construct this URL and report it to the user along with the suggested title/body so they can open the PR with a single click. Title and body template:
+
+```
+Title: <CHE-ID>: <short summary>
+
+Body:
 ## Summary
 - <bullet 1>
 - <bullet 2>
@@ -114,11 +124,9 @@ Closes <CHE-ID>
 - [ ] <manual checks specific to the change>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
-EOF
-)"
 ```
 
-Capture the PR URL from the output.
+When the user reports the PR number/URL back, continue with step 9.
 
 ### 9. Update Linear
 
